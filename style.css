@@ -42,6 +42,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    max-width: 100%;
+}
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -69,6 +75,7 @@ a:hover {
     max-width: 100%;
     margin: 0 auto;
     padding: 0 20px;
+    overflow-x: hidden;
 }
 
 /* ===== HEADER & NAVIGATION ===== */
@@ -262,18 +269,14 @@ input:checked + .theme-slider:before {
 
 /* ===== MAIN CONTENT LAYOUT ===== */
 .main-content {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
+    width: 100%;
     max-width: 100%;
     margin: 20px auto;
 }
 
-@media (min-width: 768px) {
-    .main-content {
-        grid-template-columns: 1fr 1fr;
-    }
-}
 
 /* ===== INSTRUCTION SECTION ===== */
 .instruction-section {
@@ -283,6 +286,8 @@ input:checked + .theme-slider:before {
     box-shadow: var(--box-shadow);
     height: fit-content;
     transition: var(--transition);
+    width: 100%;
+    overflow: hidden;
 }
 
 summary {
@@ -315,11 +320,11 @@ summary {
 
 .instruction-content ul {
     margin-left: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .instruction-content li {
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     padding-left: 5px;
 }
 
@@ -330,6 +335,7 @@ summary {
     padding: 20px;
     box-shadow: var(--box-shadow);
     transition: var(--transition);
+    width: 100%;
 }
 
 .calculator-section h2 {
@@ -356,6 +362,7 @@ summary {
     margin-bottom: 10px;
     border-left: 4px solid var(--secondary-color);
     transition: var(--transition);
+    min-height: auto;
 }
 
 .bet-section:hover {
@@ -368,6 +375,7 @@ summary {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
+    flex-wrap: wrap;
 }
 
 .first-extra, .second-extra, .third-extra {
@@ -399,6 +407,7 @@ summary {
     transition: var(--transition);
     background-color: var(--card-bg);
     color: var(--text-color);
+    width: 100%;
 }
 
 .input-group input:focus {
@@ -559,6 +568,7 @@ hr {
     transition: var(--transition);
     background-color: var(--card-bg);
     color: var(--text-color);
+    width: 100%;
 }
 
 .input-label input:focus {
@@ -917,6 +927,10 @@ dialog::backdrop {
 
 /* Mobile View (default - straight line) */
 @media (max-width: 767px) {
+    .container {
+        padding: 0 10px;
+    }
+
     .nav-bar {
         flex-direction: column;
         gap: 15px;
