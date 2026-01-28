@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arbitrage Calculator: Calculate Guaranteed Profits</title>
+    <meta name="Calculate hedge stakes and guaranteed profits for sports arbitage. Our free sure-bet calculater works for 2-way, 3-way and many way odds with reaak-time ROI tracking.">
+    <meta property="og:title" content="Free Arbitrage Betting Calculator">
+    <meta property="og:description" content="Stop guessing and start locking in profits. Use our mathematical arbitrage tool to find your ideal stakes.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mywebsite.com">
+    <link rel="icon" href="icon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+        <div class="container">
+            <nav class="nav-bar">
+                <h1><i class="fas fa-calculator"></i> Arbitrage Betting Calculator</h1>
+                <div class="header-controls">
+                    <ul class="quick-nav">
+                        <li><a href="#how-to-use"><i class="fas fa-play-circle"></i> How to Use</a></li>
+                        <li><a href="#calculator"><i class="fas fa-calculator"></i> Calculator</a></li>
+                        <li><a href="#history"><i class="fas fa-history"></i> History</a></li>
+                        <li><a href="#earn-money"><i class="fas fa-money-bill-wave"></i> Earn From Arbitrage</a></li>
+                    </ul>
+                    <div class="gtranslate_wrapper"></div>
+                    <!-- Theme Toggle with Labels -->
+                    <div class="theme-toggle-container">
+                        <span class="theme-label active" id="light-label">Light</span>
+                        <div class="theme-toggle">
+                            <input type="checkbox" id="theme-switch">
+                            <label for="theme-switch" class="theme-slider"></label>
+                        </div>
+                        <span class="theme-label inactive" id="dark-label">Dark</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <div class="container">
+        <div class="toc-container">
+            <h2><i class="fas fa-list"></i> Quick Navigation</h2>
+            <ul class="toc-links">
+                <li><a href="#what-is-arbitrage"><i class="fas fa-question-circle"></i> What is Arbitrage?</a></li>
+                <li><a href="#arbitrage-provider"><i class="fas fa-scale-balanced"></i> Arbitrage Provider</a></li>
+                <li><a href="#multiple-account"><i class="fas fa-users"></i> Multiple Account</a></li>
+                <li><a href="#history"><i class="fas fa-history"></i> Calculation History</a></li>
+                <!--<li><a href="#advanced-tips"><i class="fas fa-lightbulb"></i> Advanced Tips</a></li>-->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Instruction Section -->
+            <details class="instruction-section" id="how-to-use">
+                <summary><h2 style="display: inline-block;"> How to Use This Calculator <i class="fas fa-graduation-cap"></i></h2></summary>
+                <div class="instruction-content"> 
+                    <h3 class="mb-10">Step-by-Step Guide:</h3>
+                    <ul>
+                        <li><strong>Find arbitrage opportunities:</strong> Look for events where the combined odds across bookmakers create a profit margin. <i><small>Check arbitrage provider <a href="#arbitrage-provider">below</a>.</small></i> </li>
+                        <li><strong>Enter the odds:</strong> Input the best odds for each outcome in the calculator <i><a href="#calculator">below</a></i>.</li>
+                        <li><strong>Set your stake:</strong> Enter the total amount you want to invest.</li>
+                        <li><strong>Round Stakes:</strong> Round your bets to realistic amounts without breaking the arbitrage.</li>
+                        <li><strong>Calculate:</strong> The tool will show you exactly how much to bet on each outcome.</li>
+                    </ul>
+                    
+                    <div class="mb-20">
+                        <h3 class="mb-10">Odds Formats Supported:</h3>
+                        <p>You can enter odds in decimal format (2.50), fractional format (3/2), or American format (+150 or -200). The calculator automatically converts them.</p>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Calculator Section -->
+            <section class="calculator-section" id="calculator">
+                <h2><i class="fas fa-calculator"></i> Arbitrage Calculator</h2>
+                <form class="calcu-section" id="section">
+                    <div class="bet-section">
+                        <div class="bet-section-header">
+                            <div class="first-extra">
+                                <h4 id="stake-one">Stake 1 : $00.00</h4>
+                                <h4 id="payout-one">Payout 1 : $00.00</h4>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="first-odd">Bet 1 :</label>
+                            <input id="first-odd" type="text" placeholder="Enter odds (e.g., 2.50, 3/2, +150)" maxlength="5">
+                            <span class="error-message"></span>
+                        </div>
+                    </div>
+                    <hr>
+                    
+                    <div class="bet-section">
+                        <div class="bet-section-header">
+                            <div class="second-extra">
+                                <h4 id="stake-two">Stake 2 : $00.00</h4>
+                                <h4 id="payout-two">Payout 2 : $00.00</h4>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="second-odd">Bet 2 :</label>
+                            <input id="second-odd" type="text" placeholder="Enter odds (e.g., 2.50, 3/2, +150)" maxlength="5">
+                            <span class="error-message"></span>
+                        </div>
+                    </div>
+                    <hr>
+                    
+                    <div id="container">
+                        <template id="template">
+                            <div>
+                                <div id="template-id" class="bet-section">
+                                    <div class="bet-section-header">
+                                        <div class="third-extra">
+                                            <h4 class="third-stake" id="stake-three">Stake <span id="spanco1">3</span> : $00.00</h4>
+                                            <h4 class="third-payout" id="payout-three">Payout <span id="spanco2">3</span> : $00.00</h4>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="third-odd">Bet <span id="spanco3">3</span> :</label>
+                                        <input class="third" id="third-odd" type="text" placeholder="Enter odds" maxlength="5">
+                                        <span class="error-message"></span>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </template>
+                    </div>
+                    
+                    <div class="add-remove-more-container">
+                        <button type="button" id="add-more"><i class="fas fa-plus"></i> Add Bet <span>+</span></button>
+                        <div id="add-message" style="display: none;">Maximum selection reached</div>
+                        <div id="remove-message" style="display: none;">Minimum selection reached</div>
+                        <button type="button" id="remove-more"><i class="fas fa-minus"></i> Remove Bet <span>-</span></button>
+                    </div>
+                    
+                    <div class="amount-section">
+                        <div class="amount-header">
+                            <div class="profit-display">
+                                <h4 class="profit-display-box" id="profit">Estimated Profit : $00.00</h4>
+                                <h4 class="profit-display-box" id="roi">Estimated ROI : 00.00%</h4>
+                            </div>
+                            <div class="items-selection">
+                                <label for="items">Round Stake:</label>
+                                <select id="items">
+                                    <option value="0.00">No rounding</option>
+                                    <option value="0.0">Nearest 0.0</option>
+                                    <option value="1">Nearest $1</option>
+                                    <option value="10">Nearest $10</option>
+                                    <option value="100">Nearest $100</option>
+                                    <option value="1000">Nearest $1,000</option>
+                                    <option value="10000">Nearest $10,000</option>
+                                    <option value="100000">Nearest $100,000</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-label">
+                            <label for="amount">Total Stake :</label>
+                            <input class="amount" id="amount" type="text" placeholder="Enter total staking amount" maxlength="10" required>
+                            <div id="special-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="submit" id="calculate"><i class="fas fa-calculator"></i> Calculate</button>
+                        <button type="reset" id="reset"><i class="fas fa-redo"></i> Reset</button>
+                        <button type="button" id="save-result"><i class="fas fa-save"></i> Save Result</button>
+                    </div>
+                    
+                    <dialog id="alertDialog">
+                        <p id="msg"></p>
+                        <button id="okBtn">OK</button>
+                    </dialog>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <!-- Results History Section -->
+    <div class="container">
+        <div class="history-section" id="history">
+            <h2><i class="fas fa-history"></i> Calculation History</h2>
+            <div class="history-controls">
+                <div class="history-stats">
+                    <span id="total-calculations">Total: 0</span>
+                    <span id="total-profit">Profit: $0.00</span>
+                    <span id="avg-roi">Avg ROI: 0%</span>
+                </div>
+                <button type="button" id="clear-history" class="clear-history-btn"><i class="fas fa-trash"></i> Clear History</button>
+            </div>
+            <div id="history-container">
+                <div class="history-empty">
+                    <i class="fas fa-history"></i>
+                    <h3>No calculations saved yet</h3>
+                    <p>Use the calculator and click "Save Result" to add calculations to your history.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- What is Arbitrage Section -->
+    <div class="container">
+        <div class="info-section" id="what-is-arbitrage">
+            <h2><i class="fas fa-question-circle"></i> What is Arbitrage Betting?</h2>
+            <div class="instruction-content">
+                <p>Arbitrage betting, also known as "arbing" or "sure betting," is a technique where you place bets on all possible outcomes of a sporting event at odds that guarantee a profit regardless of the result.</p>
+                
+                <h3 class="mb-10">Key Concepts:</h3>
+                <ul>
+                    <li><strong>Risk-Free Profit:</strong> Unlike traditional betting, arbitrage eliminates the risk of loss.</li>
+                    <li><strong>Market Inefficiencies:</strong> Profits come from differences in odds between bookmakers.</li>
+                </ul>
+                
+                <h3 class="mb-10">Example Scenario:</h3>
+                <p>For a tennis match between Player A and Player B:</p>
+                <ul>
+                    <li>Bookmaker X offers 2.10 for Player A to win</li>
+                    <li>Bookmaker Y offers 2.10 for Player B to win</li>
+                    <li>This creates a guaranteed profit margin of 4.76%</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earn Money Section -->
+    <div class="container">
+        <div class="info-section" id="earn-money">
+            <h2><i class="fas fa-money-bill-wave"></i> How to Earn Money with Arbitrage Betting</h2>
+            <div class="instruction-content">
+                <p>Arbitrage betting is one of the few legitimate ways to make consistent profits from sports betting. Here's how it works:</p>
+                
+                <h3 class="mb-10">The Arbitrage Opportunity</h3>
+                <p>Bookmakers often have slightly different opinions on the probability of an outcome. This creates price discrepancies that can be exploited.</p>
+                
+                <h3 class="mb-10">Key Requirements:</h3>
+                <ol>
+                    <li id="arbitrage-provider" ><strong>Arbitrage providers :</strong> ​In the world of sports betting, "Sure Bets" or Arbitrage opportunities occur when different bookmakers have a significant disagreement on the odds of an outcome.
+                        <p><strong> → The Challenge:</strong> These discrepancies are often "market inefficiencies". You cannot find them by manually refreshing browser tabs. You need a provider that scans hundreds of books simultaneously.</p>
+                         <p>
+                            <strong> → Recommendation:</strong>
+                            <a href="">OddsJam</a> is widely considered the industry leader for real-time data. Unlike other scanners that might lag, <a href="">OddsJam</a> processes millions of odds every second and scans over 200+ sportsbooks to ensure you see the opportunity the moment it appears.
+                        </p>
+                        <a href=""> → Register for OddsJam here.</a>
+                    </li>
+                    <li id="multiple-account" ><strong> Multi-Accounting & Stealth :</strong> Sportsbooks use "fingerprinting" technology to track your IP address, browser settings, and hardware ID. If they realize you are a professional winning consistently, they will limit or close your account.
+                        ​To scale, you need to manage multiple accounts without the bookmakers linking them to the same person.
+                        <ul>
+                            <li>
+                                <strong>​Digital Identity Management</strong>
+                                <p>
+                                    ​A standard "Incognito" window is not enough to hide from a sportsbook. <a href="">Gologin</a>  allows you to create hundreds of unique browser profiles. Each account is isolated with its own digital signature. It reduces the risk of "linked account" bans by 90%, allowing you to run multiple "personalities" safely.
+                                </p>
+                                <a href=""> → Register for Gologin here.</a>
+                            </li>
+                            <li>
+                                <strong>Unified Access</strong>
+                                <p>
+                                    ​Sometimes, the best way to avoid being banned is to use a platform that wants winners. Instead of opening 20 separate accounts, you use one portal that aggregates them for you. <a href="">BetInAsia</a> gives you access to "Sharp" Asian bookmakers and major exchanges via their BLACK platform. These books operate on a high-volume model and will not ban you for being profitable. ​You manage your bankroll in one place but bet across multiple platforms simultaneously to get the best possible price.
+                                </p>
+                                <a href=""> → Register for BetInAsia here.</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Quick Execution</strong> 
+                        <p>
+                            Bookmakers are constantly adjusting their lines based on market movement and incoming bets. To ensures you land on the exact market the calculator intended, preventing costly mistakes. <a href="">OddsJam</a> features a dedicated "Bet" button directly on the arbitrage screen. Clicking the button opens a new tab and navigates you directly to that specific game. You don't have to waste time navigating through "Soccer > England > Premier League > Player Goals. <a href="">Sign-up for OddsJam here.</a>
+    
+                        </p>
+                    </li>
+                    <li>
+                        <strong>Sufficient bankroll to cover all bets</strong>
+                        <p>
+                            Arbitrage is not just about having $1000; it is about having $1000 in the right places. 
+                            To cover all outcomes, your bankroll must be spread across multiple sportsbooks simultaneously. If a "sure thing" appears between Bookie A and Bookie B, but all your funds are sittng in Bookie C, you have missed the boat.
+                        </p>
+                    </li>
+                    <li>
+                        <strong>This calculator to determine exact stakes</strong>
+                        <p>
+                            The calculator helps you determine each staking amount and payout. By rounding to the nearest $10 or $100, the calculator helps users fly under the radar, extending the life of their accounts and preventing "gubbing" (account restrictions).
+                        </p>
+                    </li>
+                </ol>
+                
+                         
+                <div class="cta-box">
+                    <h3>Ready to Start Making Risk-Free Profits?</h3>
+                    <p>Get access to our premium arbitrage opportunity scanner that automatically finds the best deals across 50+ bookmakers.</p>
+                    <a href="#">Learn More & Get Started <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <p>
+                        <small>
+                            <i>
+                                <strong>Disclaimer & Affiliate Disclosure:</strong> This website is for educational and informational purposes only and does not constitute financial, investment, or legal advice. 
+                                Arbitrage betting involves significant risk, and past results do not guarantee future profits. We are not respondible for any financial losses or account restrictions (bans/limits) incurred by users.
+                                Always conduct your own research (<strong>DYOR</strong>) and gamble responsibly.
+                            </i>
+                        </small>
+                    </p>
+                </div>
+                <div>
+                    <p>
+                        <small>
+                            <i>
+                                <strong>Affiliate Notice:</strong> Some links on this site (including OddsJam, GoLogin, and BetInAsia) are affiliate links.
+                                If you click and make a purchase, we may receive a commission at no additional cost to you. 
+                            </i>
+                        </small>
+                    </p>
+                </div>
+                <div>
+                    <p>&copy; 2026 Arbitrage Betting Calculator. All rights reserved.</p>
+                    <p>Contact info: <a href="mailto:support@arbcalc.com">support@arbcalc.com</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Goggle translate -->
+    
+    <script>window.gtranslateSettings = {"default_language":"en","native_language_names":true,"detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper","flag_size":15,"switcher_horizontal_position":"inline","switcher_vertical_position":"top","alt_flags":{"en":"usa"}}</script>
+    <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
+    <script src="arbLogic.js"></script>
+    
+</body>
+</html>
