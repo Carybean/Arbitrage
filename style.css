@@ -269,12 +269,18 @@ input:checked + .theme-slider:before {
 
 /* ===== MAIN CONTENT LAYOUT ===== */
 .main-content {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 20px;
     width: 100%;
     max-width: 100%;
     margin: 20px auto;
+}
+
+@media (min-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 
