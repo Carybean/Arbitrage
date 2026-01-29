@@ -308,6 +308,7 @@ summary {
     border-bottom: 2px solid var(--border-color);
     display: flex;
     align-items: center;
+    font-size: 1.2rem;
     gap: 10px;
     transition: var(--transition);
 }
