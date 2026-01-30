@@ -234,8 +234,14 @@ function updateGlobalStatus(){
     let formIsReady = true;
     allInputs.forEach(inp  => {
         const val = inp.value.trim();
+        const numParts = val.slice(1);
         if (val === "" || /[./+-]$/.test(val)){
             formIsReady = false;
+        }
+        if (/^[+-]/.test(val)){
+            if(parseFloat(numParts) < 100) {
+                formIsReady = false;
+            }
         }
     });
     window.allInputsValid = formIsReady;

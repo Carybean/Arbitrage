@@ -121,6 +121,11 @@ header {
     gap: 15px;
     list-style: none;
 }
+.quick-nav li {
+    background-color: var(--light-color);
+    border-radius: 20px;
+    padding: 5px;
+}
 
 .quick-nav a {
     color: var(--text-color);
@@ -308,7 +313,6 @@ summary {
     border-bottom: 2px solid var(--border-color);
     display: flex;
     align-items: center;
-    font-size: 1.2rem;
     gap: 10px;
     transition: var(--transition);
 }
@@ -989,6 +993,16 @@ dialog::backdrop {
         width: 100%;
         max-width: 300px;
     }
+
+    .instruction-section h2 {
+        font-size: 1.2rem;
+    }
+
+    dialog {
+        position: fixed;
+        top: 25%;
+        right: 10%;
+    }
     
     .history-controls {
         flex-direction: column;
@@ -1014,12 +1028,24 @@ dialog::backdrop {
     .bet-section-header {
         flex-direction: row;
     }
+
+    dialog {
+        position: fixed;
+        top: 25%;
+        left: 25%;
+    }
 }
 
 /* Large View (Desktop) */
 @media (min-width: 1200px) {
     .main-content {
         grid-template-columns: 1fr 1fr;
+    }
+
+    dialog {
+        position: fixed;
+        top: 25%;
+        left: 50%;
     }
     
     .footer-content {
