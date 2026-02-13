@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hedging & Cash-Out Calculator | Bet Arbitrage Tools</title>
+    <meta name="description" content="Calculate optimal hedge bets to lock in profits or minimize losses. Perfect for live betting situations and cash-out decisions.">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Hedging Calculator",
+            "url": "https://betarbingcalculator.com/hedging-calculator.html"
+        }
+    </script>
+    <link rel="icon" type="image/x-icon" href="../assets/faviconico.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="../assets/faviconsvg.svg">
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="manifest" href="../assets/site.webmanifest">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/hedging-calculator.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3EJB4E93Z"></script>
+    <script>
+        if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-Q3EJB4E93Z');
+        }
+    </script>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+        <div class="container">
+            <nav class="nav-bar">
+                <h1><i class="fas fa-shield-alt"></i> Hedging Calculator</h1>
+                <div class="header-controls">
+                    <div class="calculator-dropdown">
+                        <button class="dropdown-btn">
+                            <i class="fas fa-calculator"></i> Calculators <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content" id="calculators-dropdown">
+                            <a href="index.html"><i class="fas fa-balance-scale"></i> Arbitrage Calculator</a>
+                            <a href="odds-converter.html"><i class="fas fa-exchange-alt"></i> Odds Converter</a>
+                            <a href="implied-probability.html"><i class="fas fa-chart-pie"></i> Implied Probability</a>
+                            <a href="parlay-calculator.html"><i class="fas fa-layer-group"></i> Parlay Calculator</a>
+                            <a href="ev-calculator.html"><i class="fas fa-chart-line"></i> EV Calculator</a>
+                            <a href="kelly-calculator.html"><i class="fas fa-chart-bar"></i> Kelly Criterion</a>
+                            <a href="free-bet-calculator.html"><i class="fas fa-gift"></i> Free Bet Calculator</a>
+                            <a href="hedging-calculator.html"><i class="fas fa-shield-alt"></i> Hedging Calculator</a>
+                        </div>
+                    </div>
+                    
+                    <ul class="quick-nav">
+                        <li><a href="#how-to-use"><i class="fas fa-play-circle"></i> How to Use</a></li>
+                        <li><a href="#calculator"><i class="fas fa-shield-alt"></i> Calculator</a></li>
+                        <li><a href="#breakdown"><i class="fas fa-table"></i> Breakdown</a></li>
+                    </ul>
+
+                    <div style="width: 100px;" class="gtranslate_wrapper"></div>
+                    
+                    <div class="theme-toggle-container">
+                        <span class="theme-label">Light</span>
+                        <div class="theme-toggle">
+                            <input type="checkbox" id="theme-switch">
+                            <label for="theme-switch" class="theme-slider"></label>
+                        </div>
+                        <span class="theme-label">Dark</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Instruction Section -->
+            <details class="instruction-section" id="how-to-use">
+                <summary><h2 style="display: inline-block;"> How to Use This Calculator <i class="fas fa-graduation-cap"></i></h2></summary>
+                <div class="instruction-content">
+                    <p><strong>Hedging</strong> is placing a second bet against your original position to lock in profits or minimize losses. This calculator helps you make smart betting decisions in live betting situations.</p>
+                    
+                    <h3><i class="fas fa-list-ol"></i> Step-by-Step Guide:</h3>
+                    <ol>
+                        <li><strong>Select Your Hedging Objective:</strong>
+                            <ul>
+                                <li><strong>Lock in Profit</strong> - When your original bet is winning</li>
+                                <li><strong>Cut Losses</strong> - When your original bet is losing</li>
+                                <li><strong>Break Even</strong> - Eliminate all risk entirely</li>
+                            </ul>
+                        </li>
+                        <li><strong>Enter Original Bet Details:</strong>
+                            <ul>
+                                <li><strong>Original Stake:</strong> Amount you originally bet</li>
+                                <li><strong>Original Odds:</strong> Odds you received when placing the bet</li>
+                            </ul>
+                        </li>
+                        <li><strong>Enter Current Market Conditions:</strong>
+                            <ul>
+                                <li><strong>Current Odds (Opposite):</strong> Current odds for the opposite outcome</li>
+                                <li><strong>Cash-Out Offer (Optional):</strong> Your bookmaker's cash-out offer for comparison</li>
+                            </ul>
+                        </li>
+                        <li><strong>Select Hedging Strategy:</strong> Choose how much profit to lock in or loss to reduce</li>
+                        <li><strong>Review Results:</strong> The calculator shows exactly how much to hedge and your guaranteed outcome</li>
+                    </ol>
+                    
+                    <h3><i class="fas fa-balance-scale"></i> When to Hedge:</h3>
+                    <div class="use-case-grid">
+                        <div class="use-case">
+                            <h4><i class="fas fa-lock text-success"></i> Lock in Profits</h4>
+                            <p>Your original bet is winning but the game situation has changed. Hedge to secure guaranteed profit instead of risking it all.</p>
+                            <p><strong>Example:</strong> You bet $100 at 3.00 odds (+$200 potential). The game is now close - hedge to lock in $80 guaranteed profit.</p>
+                        </div>
+                        <div class="use-case">
+                            <h4><i class="fas fa-cut text-warning"></i> Cut Losses</h4>
+                            <p>Your original bet is losing. Hedge to reduce your potential loss instead of losing your entire stake.</p>
+                            <p><strong>Example:</strong> You bet $100 at 3.00 odds but your team is losing. Hedge to reduce potential loss from $100 to $50.</p>
+                        </div>
+                        <div class="use-case">
+                            <h4><i class="fas fa-exchange-alt text-info"></i> Live Betting Opportunities</h4>
+                            <p>Odds have moved significantly in your favor. Hedge to take advantage of arbitrage opportunities.</p>
+                            <p><strong>Example:</strong> You got 3.00 odds, current opposite odds are 1.80. You can hedge for guaranteed profit.</p>
+                        </div>
+                    </div>
+                    
+                    <h3><i class="fas fa-lightbulb"></i> Pro Tips:</h3>
+                    <ul>
+                        <li><strong>Always compare with cash-out:</strong> Bookmakers often offer worse value than hedging yourself</li>
+                        <li><strong>Consider partial hedging:</strong> Locking 50-70% profit keeps some upside potential</li>
+                        <li><strong>Factor in betting fees:</strong> Some bookmakers charge fees on winnings</li>
+                        <li><strong>Hedge early in live games:</strong> Odds can change rapidly during events</li>
+                        <li><strong>Use multiple bookmakers:</strong> Get the best odds for your hedge bet</li>
+                    </ul>
+                    
+                    <div class="important-note">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Important Notes:</h4>
+                        <ul>
+                            <li>Hedging guarantees an outcome but eliminates potential for maximum profit</li>
+                            <li>Some bookmakers restrict or limit hedging activities</li>
+                            <li>Always verify current odds before placing hedge bets</li>
+                            <li>This calculator assumes you can place bets at the displayed odds</li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Calculator Section -->
+            <section class="calculator-section" id="calculator">
+                <h2><i class="fas fa-shield-alt"></i> Hedging & Cash-Out Calculator</h2>
+                
+                <!-- Mode Selector - NOW IN A ROW -->
+                <div class="mode-selector">
+                    <h3>Hedging Objective</h3>
+                    <p>What do you want to achieve with hedging?</p>
+                    <div class="mode-buttons">
+                        <button type="button" class="mode-btn active" data-mode="profit">
+                            <i class="fas fa-lock"></i>
+                            <span>Lock in Profit</span>
+                            <small>Guarantee a win</small>
+                        </button>
+                        <button type="button" class="mode-btn" data-mode="loss">
+                            <i class="fas fa-cut"></i>
+                            <span>Cut Losses</span>
+                            <small>Minimize damage</small>
+                        </button>
+                        <button type="button" class="mode-btn" data-mode="breakeven">
+                            <i class="fas fa-balance-scale"></i>
+                            <span>Break Even</span>
+                            <small>Eliminate risk</small>
+                        </button>
+                    </div>
+                </div>
+                
+                <form class="calculator-form" id="calculator-form">
+                    <!-- Odds Format Selector - SINGLE SELECTOR -->
+                    <div class="input-section">
+                        <h3>Odds Format Settings</h3>
+                        <div class="input-group">
+                            <label for="odds-format">Odds Format: </label>
+                            <select id="odds-format">
+                                <option value="decimal">Decimal</option>
+                                <option value="fractional">Fractional</option>
+                                <option value="american">American</option>
+                            </select>
+                        </div>
+                        <div class="odds-format-sync">
+                            <div class="sync-toggle">
+                                <input type="checkbox" id="sync-odds-format" checked>
+                                <label for="sync-odds-format">Sync format for both odds</label>
+                            </div>
+                            <div class="sync-status" id="sync-status">✓ Format synced</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Original Bet Inputs -->
+                    <div class="input-section">
+                        <h3>Original Bet Details</h3>
+                        <div class="input-group">
+                            <label for="original-stake">Original Stake: </label>
+                            <input type="text" id="original-stake" inputmode="decimal" maxlength="13" min="0" placeholder="e.g., 100" value="100">
+                        </div>
+                        <div class="input-hint">Amount you originally bet</div>
+                        
+                        <div class="input-group">
+                            <label for="original-odds">Original Odds: </label>
+                            <input type="text" inputmode="decimal" maxlength="13" id="original-odds" placeholder="e.g., 3.00" value="3.00">
+                        </div>
+                        <div class="input-hint">Odds when you placed the original bet</div>
+                        <div class="error-message" id="original-odds-error"></div>
+                        
+                        <h3 style="margin-top: 15px;">Current Market Conditions</h3>
+                        
+                        <div class="input-group">
+                            <label for="current-odds">Current Odds (Opposite): </label>
+                            <input type="text" id="current-odds" inputmode="decimal" maxlength="13" placeholder="e.g., 2.50" value="2.50">
+                        </div>
+                        <div class="input-hint">Current odds for the opposite outcome</div>
+                        <div class="error-message" id="current-odds-error"></div>
+                        
+                        <div class="input-group">
+                            <label for="cashout-offer">Cash-Out Offer (Optional): </label>
+                            <input type="text" inputmode="decimal" id="cashout-offer" maxlength="13" min="0" placeholder="e.g., 150">
+                        </div>
+                        <div class="input-hint">Bookmaker's cash-out offer (if available)</div>
+                    </div>
+                    
+                    <!-- Hedge Options - 2 COLUMNS FROM MOBILE -->
+                    <div class="hedge-options">
+                        <h3>Hedging Options </h3>
+                        <p>Select your preferred hedging strategy:</p>
+                        <div class="options-grid" id="options-grid">
+                            <!-- Options populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="button" id="calculate-btn"><i class="fas fa-calculator"></i> Calculate Hedge</button>
+                        <button type="reset" id="reset-btn"><i class="fas fa-redo"></i> Reset</button>
+                        <button type="button" id="save-scenario"><i class="fas fa-save"></i> Save Scenario</button>
+                    </div>
+                </form>
+                
+                <!-- Results Section - 2 COLUMNS FROM MOBILE -->
+                <div class="results-section" id="results">
+                    <h3><i class="fas fa-chart-bar"></i> Hedging Results</h3>
+                    
+                    <div class="hedge-display">
+                        <div class="hedge-label" id="hedge-label">Optimal Hedge Bet </div>
+                        <div class="hedge-value" id="hedge-value">$120.00</div>
+                        <div class="hedge-description" id="hedge-description">
+                            Lock Profit - Full Hedge: Lock in $80.00 guaranteed profit with $120.00 hedge bet.
+                        </div>
+                    </div>
+                    
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h4>Original Potential Win </h4>
+                            <div class="result-value" id="result-original-win">$200.00</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Guaranteed Profit </h4>
+                            <div class="result-value" id="result-guaranteed">$80.00</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Hedge Bet Amount </h4>
+                            <div class="result-value" id="result-hedge-amount">$120.00</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Risk Reduction </h4>
+                            <div class="result-value" id="result-risk-reduction">100%</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Metrics - 2 COLUMNS FROM MOBILE -->
+                    <div class="results-grid" style="margin-top: 12px;">
+                        <div class="result-card">
+                            <h4>Profit if Original Wins </h4>
+                            <div class="result-value" id="result-profit-original">$80.00</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Profit if Hedge Wins </h4>
+                            <div class="result-value" id="result-profit-hedge">$80.00</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>ROI on Hedge </h4>
+                            <div class="result-value" id="result-roi">66.67%</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Effective Cash-Out </h4>
+                            <div class="result-value" id="result-effective-cashout">No cash-out offer</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Outcome Breakdown -->
+                <div class="outcome-breakdown" id="breakdown">
+                    <h3><i class="fas fa-table"></i> Outcome Breakdown </h3>
+                    
+                    <div class="breakdown-grid">
+                        <div class="outcome-card win">
+                            <h4>Original Bet Wins </h4>
+                            <div>Original bet pays out, hedge bet loses</div>
+                            <div class="outcome-stats">
+                                <div class="stat-label">Net Profit:</div>
+                                <div class="stat-value" id="outcome-original-profit">$80.00</div>
+                            </div>
+                            <div class="outcome-stats">
+                                <div class="stat-label">Total Return:</div>
+                                <div class="stat-value" id="outcome-original-return">$180.00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="outcome-card loss">
+                            <h4>Original Bet Loses </h4>
+                            <div>Original bet loses, hedge bet wins</div>
+                            <div class="outcome-stats">
+                                <div class="stat-label">Net Profit:</div>
+                                <div class="stat-value" id="outcome-hedge-profit">$80.00</div>
+                            </div>
+                            <div class="outcome-stats">
+                                <div class="stat-label">Total Return:</div>
+                                <div class="stat-value" id="outcome-hedge-return">$120.00</div>
+                            </div>
+                        </div>
+                        
+                        <div class="outcome-card hedge">
+                            <h4>With Hedging </h4>
+                            <div>Guaranteed result regardless of outcome</div>
+                            <div class="outcome-stats">
+                                <div class="stat-label">Guaranteed Profit:</div>
+                                <div class="stat-value" id="outcome-guaranteed-profit">$80.00</div>
+                            </div>
+                            <div class="outcome-stats">
+                                <div class="stat-label">Risk Level:</div>
+                                <div class="stat-value" id="outcome-risk-level">Very Low</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comparison Table -->
+                <div class="comparison-table">
+                    <h3><i class="fas fa-balance-scale"></i> Strategy Comparison </h3>
+                    
+                    <table id="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Strategy </th>
+                                <th>Potential Profit </th>
+                                <th>Potential Loss </th>
+                                <th>Risk Level </th>
+                                <th>Recommendation </th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparison-body">
+                            <tr>
+                                <td><strong>No Hedge</strong></td>
+                                <td>$200.00</td>
+                                <td>-$100.00</td>
+                                <td>High</td>
+                                <td>High risk, high reward</td>
+                            </tr>
+                            <tr class="better-option">
+                                <td><strong>With Hedge</strong></td>
+                                <td>$80.00</td>
+                                <td>$80.00</td>
+                                <td>None (Guaranteed)</td>
+                                <td>Guaranteed result</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="ads-section">
+            <h2><i class="fas fa-star"></i> Recommended Tools & Services</h2>
+            <div class="ads-grid">
+                <!-- Ad 1: OddsJam - Arbitrage Scanner -->
+                <div class="ad-card">
+                    <div class="ad-badge">Industry Leader</div>
+                    <div class="ad-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="ad-title">OddsJam</div>
+                    <div class="ad-description">
+                        Real-time arbitrage scanner processing millions of data points per second across 200+ sportsbooks. Instant alerts with direct "Bet" button navigation. The industry standard for finding market inefficiencies before they disappear.
+                    </div>
+                    <a href="https://oddsjam.com/?ref=njuwzdv" class="ad-link" target="_blank" rel="nofollow sponsored">
+                        <i class="fas fa-external-link-alt"></i> Try OddsJam Scanner
+                    </a>
+                </div>
+                
+                <div class="ad-card">
+                    <div class="ad-badge">No Betting Limits</div>
+                    <div class="ad-icon">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <div class="ad-title">AsianConnect</div>
+                    <div class="ad-description">
+                        Professional-grade betting broker giving you access to high-volume global markets through a single account. Designed for winning players—these markets welcome consistent winners and rarely impose restrictions. Manage one bankroll, access global prices.
+                    </div>
+                    <a href="https://www.acrf.me?rid=ami146212" class="ad-link" target="_blank" rel="nofollow sponsored">
+                        <i class="fas fa-arrow-right"></i> Access AsianConnect
+                    </a>
+                </div>
+            
+                <div class="ad-card">
+                    <div class="ad-badge">Scaling Blueprint</div>
+                    <div class="ad-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="ad-title">Arbitrage Betting System</div>
+                    <div class="ad-description">
+                        Master professional digital hygiene, workspace isolation, and high-volume scaling. The complete blueprint for shifting from "burning" accounts to building a sustainable, long-term betting business. Digital fingerprint management + bankroll distribution strategy.
+                    </div>
+                    <a href="https://emperorarb.gumroad.com/l/Arbitrage-Betting-System" class="ad-link" target="_blank" rel="nofollow sponsored">
+                        <i class="fas fa-gem"></i> Get The System
+                    </a>
+                </div>
+            </div>
+            <p style="color: var(--gray-color); font-size: 0.75rem; margin-top: 15px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                <i class="fas fa-fingerprint"></i> Professional setup? Use <a href="https://gologin.com/join/betcalculator-IPIJIBD" style="color: var(--accent-color);" target="_blank" rel="nofollow sponsored">Gologin</a> for isolated browser profiles
+            </p>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="container">
+        <div class="info-section" id="faq">
+            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+            <div class="instruction-content">
+                <div class="faq-item">
+                    <h3><i class="fas fa-lock"></i> Q: What exactly is hedging in sports betting?</h3>
+                    <p><strong>A:</strong> Hedging is placing a second bet on the opposite outcome of your original bet to reduce risk. It's like buying insurance for your bet - you pay a premium (the hedge bet) to guarantee a specific outcome, either locking in profit or limiting losses.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3><i class="fas fa-balance-scale"></i> Q: When should I hedge my bet vs. taking cash-out?</h3>
+                    <p><strong>A:</strong> Hedging almost always offers better value than cash-out. Bookmakers build a 5-15% margin into cash-out offers. With hedging, you get market prices. Only use cash-out if you can't place a hedge bet quickly or if the cash-out offer is unusually generous.</p>
+                    <p><strong>Rule of thumb:</strong> If cash-out profit > hedging guaranteed profit, take cash-out. Otherwise, hedge.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3><i class="fas fa-percentage"></i> Q: How do I choose between Full Hedge, 70% Lock, and 50% Lock?</h3>
+                    <p><strong>A:</strong> It depends on your risk tolerance and confidence in the original bet:</p>
+                    <ul>
+                        <li><strong>Full Hedge (100%):</strong> You want certainty - lock all profits</li>
+                        <li><strong>70% Lock:</strong> Balance - secure most profits but keep some upside</li>
+                        <li><strong>50% Lock:</strong> Optimistic - secure half profits, gamble for more</li>
+                        <li><strong>Breakeven:</strong> Defensive - just want your money back</li>
+                    </ul>
+                </div>
+                
+                <div class="faq-item">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Q: Are there any risks or downsides to hedging?</h3>
+                    <p><strong>A:</strong> Yes, consider these factors:</p>
+                    <ul>
+                        <li><strong>Reduced profits:</strong> Hedging always gives less than maximum potential</li>
+                        <li><strong>Betting limits:</strong> Bookmakers may limit large hedge bets</li>
+                        <li><strong>Odds movement:</strong> Odds can change between calculation and bet placement</li>
+                        <li><strong>Account restrictions:</strong> Some bookmakers may restrict accounts that hedge frequently</li>
+                    </ul>
+                </div>
+                
+                <div class="faq-item">
+                    <h3><i class="fas fa-clock"></i> Q: When is the best time to hedge during a live event?</h3>
+                    <p><strong>A:</strong> Optimal hedging times vary by sport:</p>
+                    <ul>
+                        <li><strong>Football/Soccer:</strong> After a goal is scored, during halftime, or when a key player is injured</li>
+                        <li><strong>Tennis:</strong> Between sets, when a player is serving for the match, or after a break</li>
+                        <li><strong>Basketball:</strong> End of quarters, during timeouts, or after significant score changes</li>
+                        <li><strong>General rule:</strong> Hedge when the probability of your original bet winning has changed significantly</li>
+                    </ul>
+                </div>
+                
+                <div class="faq-item">
+                    <h3><i class="fas fa-book"></i> Q: What betting markets work best for hedging?</h3>
+                    <p><strong>A:</strong> These markets are ideal for hedging:</p>
+                    <ul>
+                        <li><strong>Match Winner (1X2):</strong> Simple two or three-way markets</li>
+                        <li><strong>Over/Under Goals:</strong> Clear opposite outcomes</li>
+                        <li><strong>Handicap Betting:</strong> Can create guaranteed profit scenarios</li>
+                        <li><strong>Avoid:</strong> Complex accumulators, specials, or markets with many outcomes</li>
+                    </ul>
+                </div>
+                
+                <div class="faq-item">
+                    <h3><i class="fas fa-university"></i> Q: Do bookmakers allow or discourage hedging?</h3>
+                    <p><strong>A:</strong> It depends on the bookmaker:</p>
+                    <ul>
+                        <li><strong>Exchange sites:</strong> Designed for hedging - they encourage it</li>
+                        <li><strong>Traditional bookmakers:</strong> Generally tolerate it but may limit successful bettors</li>
+                        <li><strong>Restrictions:</strong> Some may reduce limits or close accounts of frequent hedgers</li>
+                        <li><strong>Best practice:</strong> Use different bookmakers for original and hedge bets</li>
+                    </ul>
+                </div>
+                
+                <div class="faq-item">
+                    <h3><i class="fas fa-money-bill-wave"></i> Q: How do taxes and fees affect hedging decisions?</h3>
+                    <p><strong>A:</strong> Consider these financial factors:</p>
+                    <ul>
+                        <li><strong>Betting taxes:</strong> Some jurisdictions tax winnings - factor this into calculations</li>
+                        <li><strong>Withdrawal fees:</strong> Multiple withdrawals may incur fees</li>
+                        <li><strong>Exchange commission:</strong> Betting exchanges typically charge 2-5% commission</li>
+                        <li><strong>Always calculate net profit</strong> after all fees and taxes</li>
+                    </ul>
+                </div>
+                
+                <div class="faq-item">
+                    <h3><i class="fas fa-chart-line"></i> Q: Can I use hedging for long-term profitable betting?</h3>
+                    <p><strong>A:</strong> Hedging is primarily a risk management tool, not a profit strategy. However, skilled bettors can use it to:</p>
+                    <ul>
+                        <li>Lock in arbitrage profits when odds move favorably</li>
+                        <li>Manage bankroll by securing profits during winning streaks</li>
+                        <li>Reduce variance for more consistent returns</li>
+                        <li><strong>Remember:</strong> Hedging reduces both risk AND potential returns</li>
+                    </ul>
+                </div>
+                
+                <div class="important-note">
+                    <h4><i class="fas fa-hand-paper"></i> Responsible Betting Disclaimer:</h4>
+                    <p>Hedging is a betting strategy, not a way to guarantee profits. Always:</p>
+                    <ul>
+                        <li>Bet only what you can afford to lose</li>
+                        <li>Set and stick to betting limits</li>
+                        <li>Understand that all betting involves risk</li>
+                        <li>Seek help if betting becomes a problem</li>
+                    </ul>
+                    <p>This calculator is for educational purposes. Results are estimates - always verify calculations and odds before placing bets.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <p>
+                        <small>
+                            <i>
+                                <strong>Disclaimer & Affiliate Disclosure:</strong> This website is for educational and informational purposes only and does not constitute financial, investment, or legal advice. 
+                                Arbitrage betting involves significant risk, and past results do not guarantee future profits. We are not respondible for any financial losses or account restrictions (bans/limits) incurred by users.
+                                Always conduct your own research (<strong>DYOR</strong>) and gamble responsibly.
+                            </i>
+                        </small>
+                    </p>
+                </div>
+                <div>
+                    <p>
+                        <small>
+                            <i>
+                                <strong>Affiliate Notice:</strong> Some links on this site (including OddsJam, GoLogin, and BetInAsia) are affiliate links.
+                                If you click and make a purchase, we may receive a commission at no additional cost to you. 
+                            </i>
+                        </small>
+                    </p>
+                </div>
+                <div>
+                    <p>&copy; 2026 betarbingcalculator.com. All rights reserved.</p>
+                    <p>Contact: <a href="mailto:support@betarbingcalculator.com" style="color: white;">support@betarbingcalculator.com</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Goggle translate --> 
+    <script>window.gtranslateSettings = {"default_language":"en","native_language_names":true,"detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper","flag_size":15,"switcher_horizontal_position":"inline","switcher_vertical_position":"top","alt_flags":{"en":"usa"}}</script>
+    <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
+    <script src="../js/hedging-calculator.js"></script>
+</body>
+</html>

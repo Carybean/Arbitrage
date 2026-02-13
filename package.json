@@ -1,0 +1,13 @@
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  "description": "Arbitrage Betting Calculator",
+  "main": "index.js",
+  "scripts": {
+    "build": "mkdir dist && mkdir dist/js && mkdir dist/css && mkdir dist/assets && terser src/js/*.js -o dist/js --compress --mangle && javascript-obfuscator dist/js --output dist/js && cleancss -o dist/css src/css/*.css && html-minifier-cli src/html/*.html -o dist --collapse-whitespace --remove-comments && xcopy src/assets dist/assets /E /I /Y && copy CNAME dist\\"
+  },
+  "keywords": ["betting", "arbitrage", "calculator", "sports betting", "odds converter", "implied probability", "kelly calculator", "parlay calculator"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {}
+}

@@ -6,10 +6,19 @@
     <title> Arbitrage Betting Calculator: Calculate Profits </title>
     <script type="application/ld+json">
         {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Arbitrage Bet Calculator",
+        "url": "https://betarbingcalculator.com/",
+        "logo": "https://betarbingcalculator.com/assets/images/logo.png"
+        }
+    </script>
+    <script type="application/ld+json">
+        {
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "Arbitrage Bet Calculator",
-            "url": "https://betarbingcalculator"
+            "url": "https://betarbingcalculator.com/"
         }
     </script>
     <meta name="description" content="Master surebets with our Arbitrage Calculator. Supports Decimal, Fraction, & American odds, stake rounding, and multi-bets with a built-in history log.">
@@ -17,16 +26,23 @@
     <meta property="og:description" content="Stop guessing and start locking in profits. Use our mathematical arbitrage tool to find your ideal stakes.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://betarbingcalculator.com">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon2.png">
+    <link rel="icon" type="image/x-icon" href="../assets/faviconico.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="../assets/faviconsvg.svg">
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="manifest" href="../assets/site.webmanifest">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3EJB4E93Z"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+        if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
 
-        gtag('config', 'G-Q3EJB4E93Z');
+            gtag('config', 'G-Q3EJB4E93Z');
+        }
     </script>
 </head>
 <body>
@@ -35,14 +51,27 @@
         <div class="container">
             <nav class="nav-bar">
                 <h1><i class="fas fa-calculator"></i> Arbitrage Betting Calculator</h1>
+                <!-- Update this section in your header -->
                 <div class="header-controls">
-                    <ul class="quick-nav">
-                        <li><a href="#how-to-use"><i class="fas fa-play-circle"></i> How to Use</a></li>
-                        <li><a href="#calculator"><i class="fas fa-calculator"></i> Calculator</a></li>
-                        <li><a href="#history"><i class="fas fa-history"></i> History</a></li>
-                        <li><a href="#earn-money"><i class="fas fa-money-bill-wave"></i> Earn From Arbitrage</a></li>
-                    </ul>
-                    <div class="gtranslate_wrapper"></div>
+                    <!-- Calculator Dropdown Menu -->
+                    <div class="calculator-dropdown">
+                        <button class="dropdown-btn">
+                            <i class="fas fa-calculator"></i> Calculators <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content" id="calculators-dropdown">
+                            <a href="index.html"><i class="fas fa-balance-scale"></i> Arbitrage Calculator</a>
+                            <a href="odds-converter.html"><i class="fas fa-exchange-alt"></i> Odds Converter</a>
+                            <a href="implied-probability.html"><i class="fas fa-chart-pie"></i> Implied Probability</a>
+                            <a href="parlay-calculator.html"><i class="fas fa-layer-group"></i> Parlay Calculator</a>
+                            <a href="ev-calculator.html"><i class="fas fa-chart-line"></i> EV Calculator</a>
+                            <a href="kelly-calculator.html"><i class="fas fa-chart-bar"></i> Kelly Criterion</a>
+                            <a href="free-bet-calculator.html"><i class="fas fa-gift"></i> Free Bet Calculator</a>
+                            <a href="hedging-calculator.html"><i class="fas fa-shield-alt"></i> Hedging Calculator</a>
+                        </div>
+                    </div>
+                    
+                    <div style="width: 100px;" class="gtranslate_wrapper"></div>
+                    
                     <!-- Theme Toggle with Labels -->
                     <div class="theme-toggle-container">
                         <span class="theme-label active" id="light-label">Light</span>
@@ -52,6 +81,10 @@
                         </div>
                         <span class="theme-label inactive" id="dark-label">Dark</span>
                     </div>
+
+                    <ul class="quick-nav">
+                        <li><a href="#earn-money"><i class="fas fa-money-bill-wave"></i> Earn From Arbitrage</a></li>
+                    </ul>
                 </div>
             </nav>
         </div>
@@ -260,23 +293,23 @@
                         <p><strong> → The Solution:</strong> You need a high-frequency scanner that processes millions of data points per second.</p>
                         <p>
                             <strong> → Recommendation:</strong>
-                            <a href="https://oddsjam.com/?ref=njuwzdv">OddsJam</a> is the industry leader for real-time data. It scans over 200+ sportsbooks simultaneously to ensure you see the opportunity the moment it appears. Their dedicated "Bet" button streamlines the process, navigating you directly to the specific market to prevent missing a price move.
+                            <a target="_blank" rel="nofollow sponsored" href="https://oddsjam.com/?ref=njuwzdv">OddsJam</a> is the industry leader for real-time data. It scans over 200+ sportsbooks simultaneously to ensure you see the opportunity the moment it appears. Their dedicated "Bet" button streamlines the process, navigating you directly to the specific market to prevent missing a price move.
                         </p>
-                        <a href="https://oddsjam.com/?ref=njuwzdv"> → Register for OddsJam here.</a>
+                        <a target="_blank" rel="nofollow sponsored" href="https://oddsjam.com/?ref=njuwzdv"> → Register for OddsJam here.</a>
                     </li>
                     <li id="privacy" ><strong> Privacy & Market Access:</strong> To treat arbitrage like a business, you need professional-grade infrastructure to manage your digital footprint and access high-limit markets.
                         <ul>
                             <li>
                                 <strong>Digital Workspace Isolation (Privacy)</strong>
                                 <p>Standard browsers leak "digital fingerprints" (IP, hardware ID, etc.). To maintain a professional setup, it is vital to keep your betting environments separate.</p>
-                                <p><strong> → The Tool:</strong>  <a href="https://gologin.com/join/betcalculator-IPIJIBD">Gologin</a> allows you to create isolated browser profiles, each with its own unique digital signature. This ensures that your professional data research remains private and isolated from your personal browsing, reducing the risk of unintended account linking.</p>
-                                <a href="https://gologin.com/join/betcalculator-IPIJIBD"> → Register for Gologin here.</a>
+                                <p><strong> → The Tool:</strong>  <a target="_blank" rel="nofollow sponsored" href="https://gologin.com/join/betcalculator-IPIJIBD">Gologin</a> allows you to create isolated browser profiles, each with its own unique digital signature. This ensures that your professional data research remains private and isolated from your personal browsing, reducing the risk of unintended account linking.</p>
+                                <a target="_blank" rel="nofollow sponsored" href="https://gologin.com/join/betcalculator-IPIJIBD"> → Register for Gologin here.</a>
                             </li>
                             <li>
                                 <strong>High-Volume Liquidity (Brokers)</strong>
                                 <p>Many local sportsbooks restrict users who win consistently. To scale, professionals use brokers who welcome high-volume traders.</p>
-                                <p><strong>→ The Tool:</strong> <a href="https://www.acrf.me?rid=ami146212"> Asianconnect</a> is designed to simplify betting by giving users access to multiple reputable betting markets through a single account. These markets operate on a high-volume model and generally do not limit profitable players. You manage one bankroll and access the best global prices.</p>
-                                <a href="https://www.acrf.me?rid=ami146212"> → Register for Asianconnect here.</a>
+                                <p><strong>→ The Tool:</strong> <a target="_blank" rel="nofollow sponsored" href="https://www.acrf.me?rid=ami146212"> Asianconnect</a> is designed to simplify betting by giving users access to multiple reputable betting markets through a single account. These markets operate on a high-volume model and generally do not limit profitable players. You manage one bankroll and access the best global prices.</p>
+                                <a target="_blank" rel="nofollow sponsored" href="https://www.acrf.me?rid=ami146212"> → Register for Asianconnect here.</a>
                             </li>
                         </ul>
                     </li>
@@ -291,7 +324,7 @@
                 <div class="cta-box" >
                     <h3 id="advanced-tips">Ready to Scale Your Betting Without Getting Limited?</h3>
                     <p>Master the professional digital hygiene needed to stay under the bookie's radar. The Arbitrage Betting System provides the blueprint for workspace isolation and high-volume scaling. Shift from "burning" accounts to building a sustainable, long-term betting business.</p>
-                    <a href="https://emperorarb.gumroad.com/l/Arbitrage-Betting-System">Learn More & Get Started <i class="fas fa-arrow-right"></i></a>
+                    <a target="_blank" rel="nofollow sponsored" href="https://emperorarb.gumroad.com/l/Arbitrage-Betting-System">Learn More & Get Started <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -330,11 +363,9 @@
         </div>
     </footer>
 
-    <!-- Goggle translate -->
-    
+    <!-- Goggle translate --> 
     <script>window.gtranslateSettings = {"default_language":"en","native_language_names":true,"detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper","flag_size":15,"switcher_horizontal_position":"inline","switcher_vertical_position":"top","alt_flags":{"en":"usa"}}</script>
     <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
-    <script src="arbLogic.js"></script>
-    
+    <script src="../js/arbLogic.js"></script> 
 </body>
 </html>

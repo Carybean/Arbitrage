@@ -43,7 +43,7 @@ themeSwitch.addEventListener('change', function() {
 
 function handleDetailsForScreen() {
     const detailsList = document.querySelectorAll("details.instruction-section");
-    if (window.innerWidth >= 1200) {
+    if (window.innerWidth >= 768) {
         detailsList.forEach(detail => detail.setAttribute("open", ""));
     }
     else {
@@ -78,6 +78,41 @@ const alertDialog = document.getElementById("alertDialog");
 const msg = document.getElementById("msg");
 const okBtn = document.getElementById("okBtn");
 
+// Get elements
+const dropdownBtn = document.querySelector('.dropdown-btn');
+const dropdownContent = document.getElementById('calculators-dropdown');
+const dropdownIcon = dropdownBtn.querySelector('.fa-chevron-down');
+
+// Toggle dropdown on click
+dropdownBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const isOpen = dropdownContent.style.display === 'block';
+    
+    // Toggle dropdown
+    dropdownContent.style.display = isOpen ? 'none' : 'block';
+    
+    // Rotate chevron icon
+    dropdownIcon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    if (!dropdownBtn.contains(e.target) && !dropdownContent.contains(e.target)) {
+        dropdownContent.style.display = 'none';
+        dropdownIcon.style.transform = 'rotate(0deg)';
+    }
+});
+
+// Close dropdown on mobile when clicking a link
+dropdownContent.addEventListener('click', function(e) {
+    if (e.target.tagName === 'A') {
+        dropdownContent.style.display = 'none';
+        dropdownIcon.style.transform = 'rotate(0deg)';
+    }
+});
+
 const countArray = ["countOne", "countTwo"];
 
 let inputValid = false;
@@ -93,9 +128,9 @@ function inputValidityCheck (){
 
             const vall = inputVar.value;
             if (vall === ""){
-                inputVar.classList.add("invalid");
-                erMsgg.textContent = "Required";
-                erMsgg.style.visibility = "visible";
+                //inputVar.classList.add("invalid");
+                //erMsgg.textContent = "Required";
+                //erMsgg.style.visibility = "visible";
             }
         });
     }
@@ -113,13 +148,13 @@ function pointValidityCheck (){
 
             if(vall.endsWith("/") || vall.endsWith(".") || vall.endsWith("+") || vall.endsWith("-")){
                 inputVar.classList.add("invalid");
-                erMsgg.textContent = "Complete it...";
+                erMsgg.textContent = "Incomplete input";
                 erMsgg.style.visibility = "visible";
             }
             else if(vall.startsWith("+") || vall.startsWith("-")){
                 if(numberParts !== "" && parseFloat(numberParts) < 100){
                     inputVar.classList.add("invalid");
-                    erMsgg.textContent = "Complete it...";
+                    erMsgg.textContent = "Incomplete input";
                     erMsgg.style.visibility = "visible";
                 }
                 else if(parseFloat(numberParts) > 100){
@@ -149,31 +184,31 @@ document.addEventListener("input", function(e) {
     }
     else if (!/^[0-9./+-]*$/.test(val)) {
         isValid = false;
-        message = "Forbidden character";
+        message = "Invalid character";
     }
     else if (/^[0./]/.test(val)) {
         isValid =false;
-        message = "Cannot start";
+        message = "Invalid start";
     }
     else if ((val.includes("+") && val.indexOf("+") !== 0) || (val.includes("-") && val.indexOf("-") !== 0)) {
         isValid = false;
-        message = "Wrong position";
+        message = "Misplaced sign";
     }
     else if (/([./+-]).*?\1/.test(val)) {
         isValid  = false;
-        message = "No duplicate";
+        message = "No duplicates";
     }
     else if (/^[+-]/.test(val) && /[./]/.test(val)) {
         isValid = false;
-        message = "Not allowed";
+        message = "Invalid format";
     }
     else if (val.includes(".") && val.includes("/")) {
         isValid = false;
-        message = "Not allowed";
+        message = "Format error";
     }
     else if (/\/0/.test(val)) {
         isValid = false;
-        message = "Cannot follow";
+        message = "Invalid sequence";
     }
     else if (/^[0-9./+-]*$/.test(val)) {
         isValid = true;      
@@ -295,14 +330,14 @@ function amountValidity (){
         const amountVar = document.querySelector(".amount");
         const amountValue = amountVar.value;
         if (amountValue.endsWith(".") || lastNumericValue == "."){
-            specialError.textContent = "Complete it...";
+            specialError.textContent = "Incomplete input";
             specialError.style.visibility = "visible";
             amountVar.style.borderColor = "red";
         }
         else{
-            specialError.textContent = "Required";
-            specialError.style.visibility = "visible";
-            amountVar.style.borderColor = "red";
+            //specialError.textContent = "Required";
+            //specialError.style.visibility = "visible";
+            //amountVar.style.borderColor = "red";
         }
     }
 }
@@ -320,15 +355,15 @@ amounts.addEventListener("input", function() {
     }
     else if (!/^[0-9.]*$/.test(val)) {
         isValid = false;
-        message = "Forbidden character";
+        message = "Invalid character";
     }
     else if (val.startsWith(".")) {
         isValid = false;
-        message = "Cannot start";
+        message = "Invalid start";
     }
     else if ((val.match(/\./g) || []).length > 1) {
         isValid = false;
-        message = "Not allow again";
+        message = "Invalid format";
     }
     else if (/^[0-9./+-]*$/.test(val)) {
         isValid = true;
@@ -357,8 +392,14 @@ amounts.addEventListener("input", function() {
     else {
         lastNumericValue = val;
         if(!amountValid){
-            specialError.style.visibility = "visible";
-            amountVar.style.borderColor = "red";
+            if (val === "") {
+                specialError.style.visibility = "hidden";
+                amountVar.style.borderColor = "";
+            }
+            else{
+                specialError.style.visibility = "visible";
+                amountVar.style.borderColor = "red";
+            }
         }
         else{
             specialError.style.visibility = "hidden";

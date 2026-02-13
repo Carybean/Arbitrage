@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kelly Criterion Calculator | Bet Arbitrage Tools</title>
+    <meta name="description" content="Calculate optimal bet sizing using Kelly Criterion. Maximize long-term bankroll growth while minimizing risk of ruin.">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Kelly Criterion Calculator",
+            "url": "https://betarbingcalculator.com/kelly-calculator.html"
+        }
+    </script>
+    <link rel="icon" type="image/x-icon" href="../assets/faviconico.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="../assets/faviconsvg.svg">
+    <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="manifest" href="../assets/site.webmanifest">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/kelly-calculator.css">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3EJB4E93Z"></script>
+    <script>
+        if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-Q3EJB4E93Z');
+        }
+    </script>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+        <div class="container">
+            <nav class="nav-bar">
+                <h1><i class="fas fa-chart-bar"></i> Kelly Criterion Calculator</h1>
+                <div class="header-controls">
+                    <!-- Calculator Dropdown Menu -->
+                    <div class="calculator-dropdown">
+                        <button class="dropdown-btn">
+                            <i class="fas fa-calculator"></i> Calculators <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content" id="calculators-dropdown">
+                            <a href="index.html"><i class="fas fa-balance-scale"></i> Arbitrage Calculator</a>
+                            <a href="odds-converter.html"><i class="fas fa-exchange-alt"></i> Odds Converter</a>
+                            <a href="implied-probability.html"><i class="fas fa-chart-pie"></i> Implied Probability</a>
+                            <a href="parlay-calculator.html"><i class="fas fa-layer-group"></i> Parlay Calculator</a>
+                            <a href="ev-calculator.html"><i class="fas fa-chart-line"></i> EV Calculator</a>
+                            <a href="kelly-calculator.html"><i class="fas fa-chart-bar"></i> Kelly Criterion</a>
+                            <a href="free-bet-calculator.html"><i class="fas fa-gift"></i> Free Bet Calculator</a>
+                            <a href="hedging-calculator.html"><i class="fas fa-shield-alt"></i> Hedging Calculator</a>
+                        </div>
+                    </div>
+                    
+                    <ul class="quick-nav">
+                        <li><a href="#sizing-guide"><i class="fas fa-balance-scale"></i> Sizing Guide</a></li>
+                        <li><a href="#faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                    </ul>
+                    
+                    <div style="width: 100px;" class="gtranslate_wrapper"></div>
+                    
+                    <!-- Theme Toggle with Labels -->
+                    <div class="theme-toggle-container">
+                        <span class="theme-label active" id="light-label">Light</span>
+                        <div class="theme-toggle">
+                            <input type="checkbox" id="theme-switch">
+                            <label for="theme-switch" class="theme-slider"></label>
+                        </div>
+                        <span class="theme-label inactive" id="dark-label">Dark</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Instruction Section -->
+        <details class="instruction-section" id="how-to-use">
+            <summary><h2 style="display: inline-block;"> How to Use This Calculator <i class="fas fa-graduation-cap"></i></h2></summary>
+            <div class="instruction-content"> 
+                <h3 class="mb-10">What is the Kelly Criterion?</h3>
+                <p>The Kelly Criterion is a mathematical formula that determines the optimal bet size to maximize long-term bankroll growth while minimizing the risk of ruin. It balances growth against risk by considering both your edge and the odds offered.</p>
+                
+                <h3 class="mb-10">Quick Guide:</h3>
+                <ul>
+                    <li><strong>Enter your bankroll:</strong> Total amount you're willing to risk.</li>
+                    <li><strong>Enter odds:</strong> The bookmaker's odds for your bet (any format).</li>
+                    <li><strong>Estimate win probability:</strong> Your assessment of the actual win probability.</li>
+                    <li><strong>Choose Kelly fraction:</strong> Full Kelly (aggressive), Half Kelly (moderate), or Quarter Kelly (conservative).</li>
+                    <li><strong>Calculate:</strong> See the optimal bet size and risk metrics.</li>
+                </ul>
+                
+                <h3 class="mb-10">Kelly Fractions:</h3>
+                <ul>
+                    <li><strong>Full Kelly:</strong> Maximum growth, higher volatility</li>
+                    <li><strong>Half Kelly:</strong> 75% of growth with 50% of volatility</li>
+                    <li><strong>Quarter Kelly:</strong> 50% of growth with 25% of volatility</li>
+                    <li><strong>Eighth Kelly:</strong> Very conservative, minimal risk</li>
+                </ul>
+                
+                <h3 class="mb-10">Warning:</h3>
+                <p>Kelly betting requires accurate probability estimates. Overestimating your edge can lead to large losses. Most professionals use fractional Kelly (½ or ¼) to reduce risk.</p>
+            </div>
+        </details>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Calculator Section -->
+            <section class="calculator-section" id="calculator">
+                <h2><i class="fas fa-chart-bar"></i> Kelly Criterion Calculator</h2>
+                
+                <form class="calculator-form" id="calculator-form">
+                    <!-- Basic Inputs -->
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label for="bankroll-input">Bankroll:</label>
+                            <input type="text" inputmode="decimal" maxlength="13" id="bankroll-input" min="0" placeholder="e.g., 1000" value="1000">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="odds-format">Odds Format:</label>
+                            <select id="odds-format">
+                                <option value="decimal">Decimal</option>
+                                <option value="fractional">Fractional</option>
+                                <option value="american">American</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="odds-input">Odds:</label>
+                            <input type="text" inputmode="decimal" maxlength="13" id="odds-input" placeholder="e.g., 2.50">
+                            <div class="error-message" id="odds-error"></div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="probability-input">Win Probability (%):</label>
+                            <input type="number" id="probability-input" min="0.1" max="99.9" step="0.1" value="50">
+                            <div class="range-value">%</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Kelly Fraction Selector -->
+                    <div class="kelly-fraction-section">
+                        <h3>Kelly Fraction (Risk Level)</h3>
+                        <p>Choose how aggressive you want to be with your betting:</p>
+                        <div class="fraction-buttons">
+                            <button type="button" class="fraction-btn active" data-fraction="1">Full Kelly</button>
+                            <button type="button" class="fraction-btn" data-fraction="0.5">Half Kelly</button>
+                            <button type="button" class="fraction-btn" data-fraction="0.25">Quarter Kelly</button>
+                            <button type="button" class="fraction-btn" data-fraction="0.125">Eighth Kelly</button>
+                            <button type="button" class="fraction-btn" data-fraction="0">Custom</button>
+                        </div>
+                        
+                        <div class="input-group" id="custom-fraction-container" style="display: none; margin-top: 10px;">
+                            <label for="custom-fraction">Custom Fraction:</label>
+                            <input type="number" id="custom-fraction" min="0" max="1" step="0.01" value="0.5">
+                            <div class="range-value">(0-1)</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="button" id="calculate-btn"><i class="fas fa-calculator"></i> Calculate</button>
+                        <button type="reset" id="reset-btn"><i class="fas fa-redo"></i> Reset</button>
+                        <button type="button" id="simulate-btn"><i class="fas fa-chart-line"></i> Run Simulation</button>
+                    </div>
+                </form>
+            </section>
+            <section>
+                <!-- Results Section -->
+                <div class="results-section" id="results">
+                    <h3><i class="fas fa-chart-bar"></i> Kelly Criterion Results</h3>
+                    
+                    <div class="kelly-display">
+                        <div class="kelly-label">Recommended Bet Size</div>
+                        <div class="kelly-value" id="kelly-value">-</div>
+                        <div class="kelly-description" id="kelly-description">
+                            Enter values above to calculate optimal bet size
+                        </div>
+                    </div>
+                    
+                    <div class="results-grid">
+                        <div class="result-card">
+                            <h4>Kelly Percentage</h4>
+                            <div class="result-value" id="result-percentage">-</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Recommended Bet</h4>
+                            <div class="result-value" id="result-bet">-</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Expected Value (EV)</h4>
+                            <div class="result-value" id="result-ev">-</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Expected Growth</h4>
+                            <div class="result-value" id="result-growth">-</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Risk Metrics -->
+                    <div class="results-grid" style="margin-top: 20px;">
+                        <div class="result-card">
+                            <h4>Edge</h4>
+                            <div class="result-value" id="result-edge">-</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Risk of Ruin</h4>
+                            <div class="result-value" id="result-ruin">-</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Volatility</h4>
+                            <div class="result-value" id="result-volatility">-</div>
+                        </div>
+                        <div class="result-card">
+                            <h4>Long-term ROI</h4>
+                            <div class="result-value" id="result-longterm">-</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <!-- Bet Sizing Guide -->
+                <div class="bet-sizing-guide" id="sizing-guide">
+                    <h3><i class="fas fa-balance-scale"></i> Bankroll Management Guide</h3>
+                    
+                    <table class="sizing-table">
+                        <thead>
+                            <tr>
+                                <th>Bankroll Size</th>
+                                <th>Full Kelly Bet</th>
+                                <th>Half Kelly Bet</th>
+                                <th>Quarter Kelly Bet</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sizing-table-body">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <!-- Simulation Section -->
+                <div class="simulation-section hidden" id="simulation-section">
+                    <h3><i class="fas fa-chart-line"></i> Growth Simulation</h3>
+                    
+                    <div class="simulation-controls">
+                        <input type="number" id="sim-bets" placeholder="Number of bets" value="100">
+                        <input type="number" id="sim-iterations" placeholder="Simulations" value="10">
+                        <button type="button" id="run-simulation">Run Simulation</button>
+                    </div>
+                    
+                    <div class="simulation-results">
+                        <h4>Simulation Results</h4>
+                        <div class="simulation-chart" id="simulation-chart">
+                            <!-- Chart will be drawn here -->
+                        </div>
+                        <div id="simulation-stats">
+                            <!-- Stats will be shown here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="ads-section">
+            <h2><i class="fas fa-star"></i> Recommended Tools & Services</h2>
+            <div class="ads-grid">
+                <!-- Ad 1: OddsJam - Arbitrage Scanner -->
+                <div class="ad-card">
+                    <div class="ad-badge">Industry Leader</div>
+                    <div class="ad-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="ad-title">OddsJam</div>
+                    <div class="ad-description">
+                        Real-time arbitrage scanner processing millions of data points per second across 200+ sportsbooks. Instant alerts with direct "Bet" button navigation. The industry standard for finding market inefficiencies before they disappear.
+                    </div>
+                    <a href="https://oddsjam.com/?ref=njuwzdv" class="ad-link" target="_blank" rel="nofollow sponsored">
+                        <i class="fas fa-external-link-alt"></i> Try OddsJam Scanner
+                    </a>
+                </div>
+                
+                <div class="ad-card">
+                    <div class="ad-badge">No Betting Limits</div>
+                    <div class="ad-icon">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <div class="ad-title">AsianConnect</div>
+                    <div class="ad-description">
+                        Professional-grade betting broker giving you access to high-volume global markets through a single account. Designed for winning players—these markets welcome consistent winners and rarely impose restrictions. Manage one bankroll, access global prices.
+                    </div>
+                    <a href="https://www.acrf.me?rid=ami146212" class="ad-link" target="_blank" rel="nofollow sponsored">
+                        <i class="fas fa-arrow-right"></i> Access AsianConnect
+                    </a>
+                </div>
+            
+                <div class="ad-card">
+                    <div class="ad-badge">Scaling Blueprint</div>
+                    <div class="ad-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="ad-title">Arbitrage Betting System</div>
+                    <div class="ad-description">
+                        Master professional digital hygiene, workspace isolation, and high-volume scaling. The complete blueprint for shifting from "burning" accounts to building a sustainable, long-term betting business. Digital fingerprint management + bankroll distribution strategy.
+                    </div>
+                    <a href="https://emperorarb.gumroad.com/l/Arbitrage-Betting-System" class="ad-link" target="_blank" rel="nofollow sponsored">
+                        <i class="fas fa-gem"></i> Get The System
+                    </a>
+                </div>
+            </div>
+            <p style="color: var(--gray-color); font-size: 0.75rem; margin-top: 15px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                <i class="fas fa-fingerprint"></i> Professional setup? Use <a href="https://gologin.com/join/betcalculator-IPIJIBD" style="color: var(--accent-color);" target="_blank" rel="nofollow sponsored">Gologin</a> for isolated browser profiles
+            </p>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="container">
+        <div class="info-section" id="faq">
+            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+            <div class="instruction-content">
+                <div class="faq-item">
+                    <h3>Q: What is the Kelly Criterion?</h3>
+                    <p>A: The Kelly Criterion is a mathematical formula that determines the optimal bet size to maximize long-term bankroll growth, given your edge and the odds. It balances growth against risk of ruin.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Q: Why use fractional Kelly?</h3>
+                    <p>A: Full Kelly betting has high volatility and assumes perfect probability estimates. Fractional Kelly (½, ¼) reduces volatility and risk while still capturing most of the growth. Most professionals use fractional Kelly.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Q: What if Kelly suggests 0% or negative?</h3>
+                    <p>A: If Kelly is 0% or negative, it means the bet has no positive expected value or negative EV. You should not place the bet at all.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Q: How accurate do probability estimates need to be?</h3>
+                    <p>A: Very accurate. Overestimating your edge by just a few percentage points can lead to large losses with Kelly betting. Always be conservative in your estimates.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Q: Can I use Kelly for sports betting?</h3>
+                    <p>A: Yes, but with caution. Kelly works best when you have a consistent edge. For most recreational bettors, fractional Kelly (¼ or ⅛) is recommended to minimize risk.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Q: What is "risk of ruin"?</h3>
+                    <p>A: The probability of losing your entire bankroll. Kelly betting theoretically has 0% risk of ruin, but in practice with estimation errors, fractional Kelly is safer.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <p>
+                        <small>
+                            <i>
+                                <strong>Disclaimer & Affiliate Disclosure:</strong> This website is for educational and informational purposes only and does not constitute financial, investment, or legal advice. 
+                                Kelly Criterion betting involves significant risk, and past results do not guarantee future profits. We are not respondible for any financial losses or account restrictions (bans/limits) incurred by users.
+                                Always conduct your own research (<strong>DYOR</strong>) and gamble responsibly.
+                            </i>
+                        </small>
+                    </p>
+                </div>
+                <div>
+                    <p>
+                        <small>
+                            <i>
+                                <strong>Affiliate Notice:</strong> Some links on this site (including OddsJam, GoLogin, and BetInAsia) are affiliate links.
+                                If you click and make a purchase, we may receive a commission at no additional cost to you. 
+                            </i>
+                        </small>
+                    </p>
+                </div>
+                <div>
+                    <p>&copy; 2026 betarbingcalculator.com. All rights reserved.</p>
+                    <p>Contact info: <a href="mailto:support@betarbingcalculator.com">support@betarbingcalculator.com</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Google Translate Widget -->
+    <script>window.gtranslateSettings = {"default_language":"en","native_language_names":true,"detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper","flag_size":15,"switcher_horizontal_position":"inline","switcher_vertical_position":"top","alt_flags":{"en":"usa"}}</script>
+    <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
+    <script src="../js/kelly-calculator.js"></script>
+</body>
+</html>
