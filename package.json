@@ -3,11 +3,24 @@
   "version": "1.0.0",
   "description": "Arbitrage Betting Calculator",
   "main": "index.js",
-  "scripts": {
-    "build": "mkdir dist && mkdir dist/js && mkdir dist/css && mkdir dist/assets && terser src/js/*.js -o dist/js --compress --mangle && javascript-obfuscator dist/js --output dist/js && cleancss -o dist/css src/css/*.css && html-minifier-cli src/html/*.html -o dist --collapse-whitespace --remove-comments && xcopy src/assets dist/assets /E /I /Y && copy CNAME dist\\"
+  "scripts": {"build": "mkdir dist && mkdir dist\\js && mkdir dist\\css && mkdir dist\\assets && for %f in (src\\js\\*.js) do terser \"%f\" -o \"dist\\js\\%~nxf\" --compress --mangle && for %f in (dist\\js\\*.js) do javascript-obfuscator \"%f\" --output \"%f\" && for %f in (src\\css\\*.css) do cleancss \"%f\" -o \"dist\\css\\%~nxf\" && for %f in (src\\html\\*.html) do npx html-minifier-cli \"%f\" -o \"dist\\%~nxf\" --collapse-whitespace --remove-comments && xcopy src\\assets dist\\assets /E /I /Y && copy CNAME dist"
   },
-  "keywords": ["betting", "arbitrage", "calculator", "sports betting", "odds converter", "implied probability", "kelly calculator", "parlay calculator"],
+  "keywords": [
+    "betting",
+    "arbitrage",
+    "calculator",
+    "sports betting",
+    "odds converter",
+    "implied probability",
+    "kelly calculator",
+    "parlay calculator"
+  ],
   "author": "",
   "license": "ISC",
-  "devDependencies": {}
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "html-minifier-cli": "^0.1.0",
+    "javascript-obfuscator": "^5.3.0",
+    "terser": "^5.46.0"
+  }
 }
