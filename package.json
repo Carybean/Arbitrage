@@ -7,7 +7,7 @@
     "build": "node build.js",
     "watch": "node build.js --watch",
     "predeploy": "npm run build",
-    "deploy": "git add . && git add dist -f && git commit -m \"Build: update\" && git subtree push --prefix dist origin gh-pages"
+    "deploy": "git add . && git add dist -f && git commit -m \"Build update\" && git push origin `git subtree split --prefix dist main` :gh-pages --force"
   },
   "keywords": [
     "betting",
