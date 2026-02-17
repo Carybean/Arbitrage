@@ -133,17 +133,19 @@ document.addEventListener('DOMContentLoaded', function() {
         
         switch(format) {
             case 'decimal':
+                if ((!/^[0-9.]*$/.test(str)) || (/([.]).*?\1/.test(str))) return null;
                 const decimal = parseFloat(str);
                 return isNaN(decimal) || decimal < 1.01 ? null : decimal;
                 
             case 'fractional':
-                if (!str.includes('/')) return null;
+                if (!str.includes('/') || (!/^[0-9/]*$/.test(str)) || (/([/]).*?\1/.test(str))) return null;
                 const [numerator, denominator] = str.split('/').map(Number);
                 if (isNaN(numerator) || isNaN(denominator) || denominator === 0) return null;
                 const fracValue = (numerator / denominator) + 1;
                 return fracValue >= 1.01 ? fracValue : null;
                 
             case 'american':
+                if (str.includes('/') || (!/^[0-9+-]*$/.test(str)) || (str.includes("+") && str.indexOf("+") !== 0) || (str.includes("-") && str.indexOf("-") !== 0) || (/([+-]).*?\1/.test(str)) || (/^[+-]/.test(str) && /[./]/.test(str))) return null;
                 // Must start with + or - and have numbers >= 100
                 if (str.startsWith('+')) {
                     const value = parseInt(str.substring(1));
@@ -159,6 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return null;
                 
             case 'indonesian':
+                if (str.includes('/') || (!/^[0-9.+-]*$/.test(str)) || (str.includes("+") && str.indexOf("+") !== 0) || (str.includes("-") && str.indexOf("-") !== 0) || (/([+-]).*?\1/.test(str))) return null;
                 // Indonesian odds: +1.50 (for decimal 2.50) or -4.00 (for decimal 1.25)
                 const indoValue = parseFloat(str);
                 if (isNaN(indoValue)) return null;
@@ -178,20 +181,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 return null;
                 
             case 'hongkong':
+                if (str.includes('/') || (!/^[0-9.]*$/.test(str)) || (/([.]).*?\1/.test(str))) return null;
                 const hkValue = parseFloat(str);
                 if (isNaN(hkValue) || hkValue < 0) return null;
                 return hkValue + 1;
                 
             case 'malay':
+                if (str.includes('/') || (!/^[0-9.+-]*$/.test(str)) || (str.includes("+") && str.indexOf("+") !== 0) || (str.includes("-") && str.indexOf("-") !== 0) || (/([+-]).*?\1/.test(str))) return null;
                 const malayValue = parseFloat(str);
                 if (isNaN(malayValue)) return null;
                 
-                if ((str.startsWith('+') && malayValue > 0) || (malayValue > 0 && malayValue < 1)) {
+                if (str.startsWith('+') && malayValue > 0 && malayValue <= 1) {
                     // Positive Malay odds: 0 < malay < 1
                     // decimal = (1 / malay) + 1
                     const decValue = (1 / malayValue) + 1;
                     return decValue >= 1.01 ? decValue : null;
-                } else if ((str.startsWith('-') && malayValue < 0) || (malayValue < 0 && malayValue > -1)) {
+                } else if (str.startsWith('-') && malayValue < 0 && malayValue >= -1) {
                     // Negative Malay odds: -1 < malay < 0
                     // decimal = |malay| + 1
                     const decValue = Math.abs(malayValue) + 1;

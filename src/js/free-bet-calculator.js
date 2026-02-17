@@ -183,18 +183,18 @@ document.addEventListener('DOMContentLoaded', function() {
         switch(format) {
             case 'decimal':
                 const decimal = parseFloat(value);
-                isValid = !isNaN(decimal) && decimal >= 1;
+                isValid = !isNaN(decimal) && decimal >= 1 && (/^[0-9.]*$/.test(value)) && (!/([.]).*?\1/.test(value));
                 break;
             case 'fractional':
                 if (value.includes('/')) {
                     const [numerator, denominator] = value.split('/').map(Number);
-                    isValid = !isNaN(numerator) && !isNaN(denominator) && denominator !== 0;
+                    isValid = !isNaN(numerator) && !isNaN(denominator) && denominator !== 0 && (/^[0-9/]*$/.test(value)) && (!/([/]).*?\1/.test(value));
                 }
                 break;
             case 'american':
                 if ((value.startsWith('+') || value.startsWith('-'))) {
                     const numValue = parseInt(value.substring(1));
-                    isValid = !isNaN(numValue) && numValue >= 100;
+                    isValid = !isNaN(numValue) && numValue >= 100 && /^[0-9+-]*$/.test(value) && !/([+-]).*?\1/.test(value) && (/^([^+]*|[^-]*)$/.test(value));
                 }
                 break;
         }
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function validateStakeAmount() {
         const value = parseFloat(freebetAmountInput.value);
-        const isValid = !isNaN(value) && value > 0;
+        const isValid = !isNaN(value) && value > 0 && (/^[0-9.]*$/.test(freebetAmountInput.value)) && (!/([.]).*?\1/.test(freebetAmountInput.value)) ;
         
         if (!isValid) {
             freebetAmountInput.classList.add('invalid');

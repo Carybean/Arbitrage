@@ -40,6 +40,7 @@
     padding: 0;
     box-sizing: border-box;
     max-width: 100%;
+    overflow-x: inherit;
 }
 
 html, body {
@@ -71,7 +72,7 @@ a:hover {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 15px;
 }
 
 /* ===== HEADER & NAVIGATION ===== */
@@ -82,13 +83,14 @@ header {
     top: 0;
     z-index: 100;
     transition: var(--transition);
+    overflow-x: visible;
 }
 
 .nav-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
+    padding: 10px 0;
 }
 
 .nav-bar h1 {
@@ -107,7 +109,7 @@ header {
 .header-controls {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
 }
 
 /* ===== CALCULATOR DROPDOWN ===== */
@@ -119,14 +121,14 @@ header {
 .dropdown-btn {
     background-color: var(--light-color);
     color: var(--text-color);
-    padding: 8px 15px;
+    padding: 6px 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 15px;
     cursor: pointer;
     font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     transition: var(--transition);
 }
 
@@ -151,11 +153,11 @@ header {
 
 .dropdown-content a {
     color: var(--text-color);
-    padding: 12px 16px;
+    padding: 10px 14px;
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     border-bottom: 1px solid var(--border-color);
     transition: var(--transition);
 }
@@ -187,14 +189,14 @@ header {
 
 .quick-nav li {
     background-color: var(--light-color);
-    border-radius: 20px;
-    padding: 5px;
+    border-radius: 15px;
+    padding: 2px;
 }
 
 .quick-nav a {
     color: var(--text-color);
     font-weight: 500;
-    padding: 5px 10px;
+    padding: 4px 8px;
     border-radius: 5px;
     transition: var(--transition);
 }
@@ -208,7 +210,7 @@ header {
 .theme-toggle-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .theme-label {
@@ -216,7 +218,7 @@ header {
     font-weight: 500;
     color: var(--text-color);
     transition: var(--transition);
-    min-width: 40px;
+    min-width: 35px;
 }
 
 .theme-label.active {
@@ -230,8 +232,8 @@ header {
 
 .theme-toggle {
     position: relative;
-    width: 60px;
-    height: 30px;
+    width: 50px;
+    height: 24px;
 }
 
 .theme-toggle input {
@@ -248,15 +250,15 @@ header {
     right: 0;
     bottom: 0;
     background-color: var(--light-color);
-    border-radius: 34px;
+    border-radius: 24px;
     transition: var(--transition);
 }
 
 .theme-slider:before {
     position: absolute;
     content: "";
-    height: 22px;
-    width: 22px;
+    height: 16px;
+    width: 16px;
     left: 4px;
     bottom: 4px;
     background-color: white;
@@ -272,26 +274,26 @@ input:checked + .theme-slider {
 }
 
 input:checked + .theme-slider:before {
-    transform: translateX(30px);
+    transform: translateX(26px);
     content: "🌙";
-    font-size: 12px;
-    line-height: 22px;
+    font-size: 10px;
+    line-height: 16px;
 }
 
 .theme-slider:before {
     content: "☀️";
-    font-size: 12px;
-    line-height: 22px;
+    font-size: 10px;
+    line-height: 16px;
 }
 
 /* ===== MAIN CONTENT ===== */
 .main-content {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 15px;
     width: 100%;
     max-width: 100%;
-    margin: 20px auto;
+    margin: 15px auto;
 }
 
 @media (min-width: 768px) {
@@ -304,12 +306,12 @@ input:checked + .theme-slider:before {
 .instruction-section {
     background-color: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 20px;
+    padding: 15px;
     box-shadow: var(--box-shadow);
     height: fit-content;
     transition: var(--transition);
     width: 100%;
-    overflow: hidden;
+    margin: 15px auto;
 }
 
 summary {
@@ -318,12 +320,12 @@ summary {
 
 .instruction-section h2 {
     color: var(--text-color);
-    margin-bottom: 15px;
-    padding-bottom: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
     border-bottom: 2px solid var(--border-color);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     transition: var(--transition);
 }
 
@@ -336,12 +338,12 @@ summary {
 }
 
 .instruction-content p {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .instruction-content ul {
-    margin-left: 20px;
-    margin-bottom: 20px;
+    margin-left: 15px;
+    margin-bottom: 10px;
 }
 
 .instruction-content li {
@@ -353,7 +355,7 @@ summary {
 .calculator-section {
     background-color: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 20px;
+    padding: 15px;
     box-shadow: var(--box-shadow);
     transition: var(--transition);
     width: 100%;
@@ -406,6 +408,7 @@ summary {
     flex-direction: column;
     align-items: center;
     gap: 5px;
+    overflow-x: visible;
 }
 
 .bet-type-btn.active {
@@ -540,6 +543,7 @@ summary {
     border-radius: var(--border-radius);
     padding: 20px;
     margin-top: 20px;
+    overflow-x: auto;
 }
 
 .results-section h3 {
@@ -844,7 +848,7 @@ summary {
     color: white;
     padding: 3px 8px;
     border-radius: 3px;
-    font-size: 0.7rem;
+    font-size: 0.7rem !important;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -954,9 +958,23 @@ footer {
     text-align: center;
 }
 
-/* ===== MOBILE VIEW CHANGES (ONLY BELOW 768px) ===== */
 @media (max-width: 768px) {
-    /* 1. SHRINK CALCULATOR HEIGHT */
+    * {
+        font-size: 0.9rem !important;
+    }
+    .nav-bar h1 {
+        font-size: 1.4rem !important;
+    }
+
+    .header-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .gtranslate_wrapper{
+        justify-self: start;
+    }
+
     .container {
         padding: 0 10px;
     }
@@ -1210,7 +1228,7 @@ footer {
 
 .global-format-row label {
     font-weight: 700 !important;
-    color: var(--secondary-color) !important;
+    color: var(--text-color) !important;
 }
 
 .global-format-row label i {
@@ -1231,8 +1249,8 @@ footer {
 }
 
 #global-odds-format:hover {
-    background-color: var(--secondary-color);
-    color: white;
+    
+    color: var(--text-color);
 }
 
 #global-odds-format:focus {
@@ -1241,7 +1259,7 @@ footer {
 }
 
 #global-format-example {
-    color: var(--secondary-color);
+    color: var(--text-color);
     font-weight: 500;
     font-style: italic;
 }

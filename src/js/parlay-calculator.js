@@ -193,6 +193,13 @@ document.addEventListener('DOMContentLoaded', function() {
             stakeError.classList.add('show');
             return false;
         }
+        else if ((!/^[0-9.]*$/.test(stakeInput.value)) || (/([.]).*?\1/.test(stakeInput.value))) {
+            stakeInput.classList.add('input-error');
+            stakeError.textContent = 'Stake must be valid';
+            stakeError.classList.add('show');
+            return false;
+        }
+        
         stakeInput.classList.remove('input-error');
         stakeError.classList.remove('show');
         return true;
@@ -207,6 +214,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 valid: false,
                 message: 'American odds must start with + or -'
+            };
+        }
+        else if ((!/^[0-9+-]*$/.test(trimmed)) || (trimmed.includes("+") && trimmed.indexOf("+") !== 0) || (trimmed.includes("-") && trimmed.indexOf("-") !== 0) || (/([+-]).*?\1/.test(trimmed))) {
+            return {
+                valid: false,
+                message: 'American odds must be valid'
             };
         }
         
@@ -243,6 +256,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 valid: false,
                 message: 'Fractional odds need a slash (e.g., 3/2)'
+            };
+        }
+
+        else if ((!/^[0-9/]*$/.test(trimmed)) || (/([/]).*?\1/.test(trimmed))) {
+            return {
+                valid: false,
+                message: 'Fractional odds must be valid (e.g., 3/2)'
             };
         }
         
@@ -283,6 +303,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const decimalValue = parseFloat(trimmed);
         
         if (isNaN(decimalValue)) {
+            return {
+                valid: false,
+                message: 'Invalid decimal number'
+            };
+        }
+        else if ((!/^[0-9.]*$/.test(trimmed)) || (/([.]).*?\1/.test(trimmed))) {
             return {
                 valid: false,
                 message: 'Invalid decimal number'

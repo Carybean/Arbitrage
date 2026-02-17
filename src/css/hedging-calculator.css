@@ -39,6 +39,7 @@
     padding: 0;
     box-sizing: border-box;
     max-width: 100%;
+    overflow-x: visible;
 }
 
 html, body {
@@ -104,7 +105,7 @@ header {
     color: var(--text-color);
     padding: 6px 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 15px;
     cursor: pointer;
     font-weight: 600;
     display: flex;
@@ -253,6 +254,8 @@ input:checked + .theme-slider:before {
 @media (min-width: 1200px) {
     .main-content {
         grid-template-columns: 1fr 1fr;
+        display: flex;
+        justify-content: space-around;
     }
 }
 
@@ -542,6 +545,7 @@ input:checked + .theme-slider:before {
     transition: var(--transition);
     min-height: 70px;
     display: flex;
+    margin-top: 3px;
     flex-direction: column;
     justify-content: center;
     position: relative;
@@ -715,6 +719,7 @@ input:checked + .theme-slider:before {
     flex-direction: column;
     justify-content: center;
     position: relative;
+    overflow-x: auto;
 }
 
 .result-card .info-icon {
@@ -806,6 +811,7 @@ input:checked + .theme-slider:before {
     justify-content: space-between;
     margin-top: 6px;
     font-size: 0.8rem;
+    overflow-x: auto;
 }
 
 /* ===== COMPARISON TABLE ===== */
@@ -815,6 +821,7 @@ input:checked + .theme-slider:before {
     padding: 12px;
     margin-top: 12px;
     font-size: 0.85rem;
+    overflow-x: auto;
 }
 
 .comparison-table h3 {
@@ -866,6 +873,7 @@ input:checked + .theme-slider:before {
     height: fit-content;
     width: 100%;
     overflow: hidden;
+    margin: 15px auto;
 }
 
 .instruction-section h2 {
@@ -1073,7 +1081,7 @@ input:checked + .theme-slider:before {
     color: white;
     padding: 3px 8px;
     border-radius: 3px;
-    font-size: 0.7rem;
+    font-size: 0.7rem !important;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -1172,6 +1180,22 @@ footer {
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
+    * {
+        font-size: 0.9rem !important;
+    }
+    .nav-bar h1 {
+        font-size: 1.4rem !important;
+    }
+
+    .header-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .gtranslate_wrapper{
+        justify-self: start;
+    }
+
     .container {
         padding: 0 10px;
     }

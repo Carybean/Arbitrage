@@ -126,6 +126,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentKellyPercentage = 0;
     let isValidOdds = false;
 
+    let lastSimulations = null;
+    let lastInitialBankroll = null;
+    let lastNumBets = null;
+
     // ===== ODDS PLACEHOLDER MANAGEMENT =====
     function updateOddsPlaceholder() {
         const format = oddsFormatSelect.value;
@@ -155,6 +159,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!str.match(/^[+-]/)) {
             return { valid: false, message: 'American odds must start with + or -' };
         }
+
+        if ((!/^[0-9+-]*$/.test(str)) || (str.includes("+") && str.indexOf("+") !== 0) || (str.includes("-") && str.indexOf("-") !== 0) || (/([+-]).*?\1/.test(str)) || (/^[+-]/.test(str) && /[./]/.test(str))) {
+            return { valid: false, message: 'American odds must be valid' };
+        }
         
         if (str.startsWith('+')) {
             const value = parseInt(str.substring(1));
@@ -176,6 +184,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!str.includes('/')) {
             return { valid: false, message: 'Fractional odds must contain / (e.g., 3/2)' };
         }
+
+        if ((!/^[0-9/]*$/.test(str)) || (/([/]).*?\1/.test(str))) {
+            return { valid: false, message: 'Fractional odds must contain / (e.g., 3/2)' };
+        }
         
         const [numerator, denominator] = str.split('/');
         const num = parseFloat(numerator);
@@ -192,6 +204,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const num = parseFloat(odds);
         if (isNaN(num) || num < 1) {
             return { valid: false, message: 'Decimal odds must be ≥ 1.0' };
+        }
+
+        if ((!/^[0-9.]*$/.test(odds)) || (/([.]).*?\1/.test(odds))) {
+            return { valid: false, message: 'Decimal odds must be valid' };
         }
         
         return { valid: true, message: '' };
@@ -551,7 +567,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const odds = oddsInput.value.trim();
         const probability = parseFloat(probabilityInput.value);
         
-        if (!isNaN(bankroll) && bankroll > 0 && odds !== '' && !isNaN(probability) && isValidOdds) {
+        if (!isNaN(bankroll) && bankroll > 0 && odds !== '' && !isNaN(probability) && isValidOdds  && (/^[0-9.]*$/.test(bankrollInput.value)) && (!/([.]).*?\1/.test(bankrollInput.value))) {
             calculate();
         }
     }
@@ -677,8 +693,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </tr>
         `;
     }
-    
-    // Run simulation
+        
     function runSimulation() {
         if (!isValidOdds) {
             alert('Please enter valid odds first.');
@@ -688,22 +703,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const numBets = parseInt(simBetsInput.value) || 100;
         const numSimulations = parseInt(simIterationsInput.value) || 10;
         
+        // Input validation
         if (numBets < 10 || numBets > 1000) {
             alert('Number of bets must be between 10 and 1000.');
             return;
         }
-        
         if (numSimulations < 1 || numSimulations > 50) {
             alert('Number of simulations must be between 1 and 50.');
             return;
         }
-        
         if (currentKellyPercentage <= 0) {
             alert('Please calculate Kelly first with positive EV.');
             return;
         }
         
-        // Get inputs for simulation
+        // Get inputs
         const bankroll = parseFloat(bankrollInput.value);
         const oddsFormat = oddsFormatSelect.value;
         const odds = oddsInput.value.trim();
@@ -714,201 +728,432 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Convert odds to decimal
         const decimalOdds = toDecimal(odds, oddsFormat);
         if (!decimalOdds) return;
         
-        // Calculate applied Kelly
         const appliedKellyPercent = currentKellyPercentage * currentFraction;
         const betFraction = appliedKellyPercent / 100;
         
-        // Run simulations
-        const simulations = [];
-        let maxBankroll = bankroll;
-        let minBankroll = bankroll;
+        // Clear previous chart and show loading
+        simulationChart.innerHTML = '';
+        simulationChart.style.position = 'relative';
+        simulationChart.style.minHeight = '400px';
         
-        for (let sim = 0; sim < numSimulations; sim++) {
-            let currentBankroll = bankroll;
-            const path = [currentBankroll];
+        const loadingDiv = document.createElement('div');
+        loadingDiv.style.position = 'absolute';
+        loadingDiv.style.top = '50%';
+        loadingDiv.style.left = '50%';
+        loadingDiv.style.transform = 'translate(-50%, -50%)';
+        loadingDiv.style.color = 'var(--text-color)';
+        loadingDiv.style.zIndex = '100';
+        loadingDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running simulations...';
+        simulationChart.appendChild(loadingDiv);
+        
+        // Use setTimeout to allow UI update
+        setTimeout(() => {
+            // Run simulations
+            const simulations = [];
+            let maxBankroll = bankroll;
+            let minBankroll = bankroll;
             
-            for (let bet = 0; bet < numBets; bet++) {
-                const betAmount = currentBankroll * betFraction;
-                const win = Math.random() * 100 < probability;
+            for (let sim = 0; sim < numSimulations; sim++) {
+                let currentBankroll = bankroll;
+                const path = [currentBankroll];
                 
-                if (win) {
-                    currentBankroll += betAmount * (decimalOdds - 1);
-                } else {
-                    currentBankroll -= betAmount;
+                for (let bet = 0; bet < numBets; bet++) {
+                    const betAmount = currentBankroll * betFraction;
+                    const win = Math.random() * 100 < probability;
+                    
+                    if (win) {
+                        currentBankroll += betAmount * (decimalOdds - 1);
+                    } else {
+                        currentBankroll -= betAmount;
+                    }
+                    
+                    currentBankroll = Math.max(currentBankroll, bankroll * 0.01);
+                    path.push(currentBankroll);
+                    
+                    maxBankroll = Math.max(maxBankroll, currentBankroll);
+                    minBankroll = Math.min(minBankroll, currentBankroll);
                 }
-                
-                // Never go below 1% of original bankroll
-                currentBankroll = Math.max(currentBankroll, bankroll * 0.01);
-                path.push(currentBankroll);
-                
-                // Update min/max for scaling
-                maxBankroll = Math.max(maxBankroll, currentBankroll);
-                minBankroll = Math.min(minBankroll, currentBankroll);
+                simulations.push(path);
             }
             
-            simulations.push(path);
-        }
-        
-        // Draw chart
-        drawSimulationChart(simulations, bankroll, numBets, maxBankroll, minBankroll);
-        
-        // Calculate statistics
-        calculateSimulationStats(simulations, bankroll);
+            // Store simulations globally for access in click handlers
+            lastSimulations = simulations;
+            lastInitialBankroll = bankroll;
+            lastNumBets = numBets;
+            
+            // Build chart with new features
+            buildFullWidthChart(simulations, bankroll, numBets, maxBankroll, minBankroll);
+            calculateSimulationStats(simulations, bankroll);
+        }, 50);
     }
-    
-    // Draw simulation chart
-    function drawSimulationChart(simulations, initialBankroll, numBets, maxBankroll, minBankroll) {
+
+    function buildFullWidthChart(simulations, initialBankroll, numBets, maxValue, minValue) {
         simulationChart.innerHTML = '';
         
-        // Find min and max for scaling
-        let maxValue = maxBankroll;
-        let minValue = minBankroll;
-        
-        // Ensure we have a reasonable range
-        const range = maxValue - minValue;
-        if (range < initialBankroll * 0.1) {
-            maxValue = initialBankroll * 1.5;
-            minValue = Math.max(0, initialBankroll * 0.5);
-        }
-        
         // Add some padding to the range
-        const rangePadding = (maxValue - minValue) * 0.05;
-        maxValue += rangePadding;
-        minValue = Math.max(0, minValue - rangePadding);
+        const range = maxValue - minValue;
+        const padding = range * 0.1;
+        const yMax = maxValue + padding;
+        const yMin = Math.max(0, minValue - padding);
         
-        const chartWidth = simulationChart.clientWidth;
-        const chartHeight = simulationChart.clientHeight;
-        const graphWidth = chartWidth - 50; // 50px for Y-axis
-        const graphHeight = chartHeight - 30; // 30px for X-axis
-        const valueRange = maxValue - minValue;
+        // Chart dimensions
+        const margin = { top: 30, right: 20, bottom: 60, left: 70 };
+        const width = simulationChart.clientWidth - margin.left - margin.right;
+        const height = simulationChart.clientHeight - margin.top - margin.bottom;
         
-        // Create chart title
-        const title = document.createElement('div');
-        title.className = 'chart-title';
-        title.textContent = 'Bankroll Growth Over Time';
-        simulationChart.appendChild(title);
+        // Create SVG
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '100%');
+        svg.style.position = 'absolute';
+        svg.style.top = '0';
+        svg.style.left = '0';
         
-        // Create grid
-        const grid = document.createElement('div');
-        grid.className = 'chart-grid';
+        const chartGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        chartGroup.setAttribute('transform', `translate(${margin.left}, ${margin.top})`);
+        svg.appendChild(chartGroup);
         
-        // Add horizontal grid lines (5 lines)
+        // Draw background grid
+        const gridGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        gridGroup.setAttribute('class', 'grid');
+        
+        // Horizontal grid lines (5 lines)
         for (let i = 0; i <= 5; i++) {
-            const y = (i / 5) * graphHeight;
-            const gridLine = document.createElement('div');
-            gridLine.className = 'chart-grid-line';
-            gridLine.style.top = y + 'px';
-            grid.appendChild(gridLine);
+            const y = height * (1 - i/5);
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', '0');
+            line.setAttribute('y1', y);
+            line.setAttribute('x2', width);
+            line.setAttribute('y2', y);
+            line.setAttribute('stroke', 'var(--border-color)');
+            line.setAttribute('stroke-dasharray', '4,4');
+            line.setAttribute('opacity', '0.3');
+            gridGroup.appendChild(line);
         }
         
-        // Add vertical grid lines (10 lines)
+        // Vertical grid lines (10 lines)
         for (let i = 0; i <= 10; i++) {
-            const x = (i / 10) * graphWidth;
-            const gridLine = document.createElement('div');
-            gridLine.className = 'chart-grid-line vertical';
-            gridLine.style.left = x + 'px';
-            grid.appendChild(gridLine);
+            const x = width * i/10;
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x);
+            line.setAttribute('y1', '0');
+            line.setAttribute('x2', x);
+            line.setAttribute('y2', height);
+            line.setAttribute('stroke', 'var(--border-color)');
+            line.setAttribute('stroke-dasharray', '4,4');
+            line.setAttribute('opacity', '0.3');
+            gridGroup.appendChild(line);
         }
+        chartGroup.appendChild(gridGroup);
         
-        simulationChart.appendChild(grid);
+        // Colors
+        const colors = [
+            '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
+            '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
+            '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000',
+            '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080'
+        ];
         
-        // Create Y-axis
-        const yAxis = document.createElement('div');
-        yAxis.className = 'chart-y-axis';
-        
-        // Add Y-axis labels (5 labels)
-        for (let i = 0; i <= 5; i++) {
-            const label = document.createElement('div');
-            label.className = 'chart-y-label';
-            const value = minValue + (5 - i) * (valueRange / 5);
-            label.textContent = formatCurrency(value, false);
-            yAxis.appendChild(label);
-        }
-        
-        simulationChart.appendChild(yAxis);
-        
-        // Create X-axis
-        const xAxis = document.createElement('div');
-        xAxis.className = 'chart-x-axis';
-        
-        // Add X-axis labels (5 labels)
-        for (let i = 0; i <= 5; i++) {
-            const label = document.createElement('div');
-            label.className = 'chart-x-label';
-            const xPos = (i / 5) * 100;
-            label.style.left = `${xPos}%`;
-            const betNumber = Math.round(i * (numBets / 5));
-            label.textContent = betNumber === 0 ? 'Start' : `Bet ${betNumber}`;
-            simulationChart.appendChild(label);
-        }
-        
-        simulationChart.appendChild(xAxis);
-        
-        // Draw each simulation path
-        simulations.forEach((path, simIndex) => {
-            // Create SVG for smooth line
-            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('width', '100%');
-            svg.setAttribute('height', '100%');
-            svg.style.position = 'absolute';
-            svg.style.top = '0';
-            svg.style.left = '50px';
-            svg.style.zIndex = '2';
+        // Draw lines
+        simulations.forEach((path, index) => {
+            const color = colors[index % colors.length];
+            let d = '';
+            path.forEach((value, i) => {
+                const x = (i / (path.length - 1)) * width;
+                const y = height - ((value - yMin) / (yMax - yMin)) * height;
+                if (i === 0) d += `M ${x} ${y}`;
+                else d += ` L ${x} ${y}`;
+            });
             
             const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            pathElement.setAttribute('d', d);
+            pathElement.setAttribute('stroke', color);
+            pathElement.setAttribute('stroke-width', '1.5');
+            pathElement.setAttribute('fill', 'none');
+            pathElement.setAttribute('class', `sim-line sim-${index}`);
+            pathElement.setAttribute('data-sim', index);
             
-            // Calculate path points
-            let pathD = '';
-            path.forEach((value, index) => {
-                const x = (index / (path.length - 1)) * graphWidth;
-                const y = graphHeight - ((value - minValue) / valueRange) * graphHeight;
-                
-                if (index === 0) {
-                    pathD = `M ${x} ${y}`;
-                } else {
-                    pathD += ` L ${x} ${y}`;
+            // Add click handler for showing value tooltip
+            pathElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showTooltip(e, index, path, initialBankroll, width, height, yMin, yMax);
+            });
+            
+            chartGroup.appendChild(pathElement);
+        });
+        
+        // Draw axes
+        const axesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        
+        // X-axis line
+        const xAxisLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        xAxisLine.setAttribute('x1', '0');
+        xAxisLine.setAttribute('y1', height);
+        xAxisLine.setAttribute('x2', width);
+        xAxisLine.setAttribute('y2', height);
+        xAxisLine.setAttribute('stroke', 'var(--text-color)');
+        xAxisLine.setAttribute('stroke-width', '2');
+        axesGroup.appendChild(xAxisLine);
+        
+        // Y-axis line
+        const yAxisLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        yAxisLine.setAttribute('x1', '0');
+        yAxisLine.setAttribute('y1', '0');
+        yAxisLine.setAttribute('x2', '0');
+        yAxisLine.setAttribute('y2', height);
+        yAxisLine.setAttribute('stroke', 'var(--text-color)');
+        yAxisLine.setAttribute('stroke-width', '2');
+        axesGroup.appendChild(yAxisLine);
+        
+        chartGroup.appendChild(axesGroup);
+        
+        // Add axis labels (THIS IS WHAT WAS MISSING!)
+        const labelsGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        
+        // Y-axis labels (5 labels)
+        for (let i = 0; i <= 5; i++) {
+            const value = yMin + (yMax - yMin) * (1 - i/5);
+            const y = height * i/5;
+            
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', '-5');
+            text.setAttribute('y', y);
+            text.setAttribute('text-anchor', 'end');
+            text.setAttribute('dominant-baseline', 'middle');
+            text.setAttribute('fill', 'var(--text-color)');
+            text.setAttribute('font-size', '10');
+            text.textContent = formatCurrency(value, false);
+            labelsGroup.appendChild(text);
+        }
+        
+        // X-axis labels (6 labels - Start, Bet 20, Bet 40, etc.)
+        for (let i = 0; i <= 5; i++) {
+            const betNumber = Math.round(i * numBets / 5);
+            const x = width * i/5;
+            
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', x);
+            text.setAttribute('y', height + 20);
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('fill', 'var(--text-color)');
+            text.setAttribute('font-size', '10');
+            text.textContent = betNumber === 0 ? 'Start' : `Bet ${betNumber}`;
+            labelsGroup.appendChild(text);
+        }
+        
+        chartGroup.appendChild(labelsGroup);
+        
+        // Add title
+        const titleText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        titleText.setAttribute('x', width/2);
+        titleText.setAttribute('y', '-10');
+        titleText.setAttribute('text-anchor', 'middle');
+        titleText.setAttribute('fill', 'var(--text-color)');
+        titleText.setAttribute('font-size', '12');
+        titleText.setAttribute('font-weight', 'bold');
+        titleText.textContent = 'Bankroll Growth Over Time';
+        chartGroup.appendChild(titleText);
+        
+        simulationChart.appendChild(svg);
+        
+        // ===== HIGHLIGHT STATE =====
+        let highlightedIndex = -1; // -1 means no highlight
+        
+        // ===== TOOLTIP ELEMENT =====
+        const tooltip = document.createElement('div');
+        tooltip.className = 'sim-tooltip';
+        tooltip.style.position = 'absolute';
+        tooltip.style.display = 'none';
+        tooltip.style.backgroundColor = 'var(--card-bg)';
+        tooltip.style.border = '1px solid var(--border-color)';
+        tooltip.style.borderRadius = '4px';
+        tooltip.style.padding = '8px';
+        tooltip.style.boxShadow = 'var(--box-shadow)';
+        tooltip.style.zIndex = '100';
+        tooltip.style.fontSize = '0.8rem';
+        tooltip.style.pointerEvents = 'none';
+        simulationChart.appendChild(tooltip);
+        
+        // ===== LEGEND =====
+        const toggleBtn = document.createElement('button');
+        toggleBtn.innerHTML = '<i class="fas fa-list"></i> Show Simulations';
+        toggleBtn.style.position = 'absolute';
+        toggleBtn.style.bottom = '5px';
+        toggleBtn.style.right = '5px';
+        toggleBtn.style.zIndex = '25';
+        toggleBtn.style.padding = '5px 10px';
+        toggleBtn.style.backgroundColor = 'var(--secondary-color)';
+        toggleBtn.style.color = 'white';
+        toggleBtn.style.border = 'none';
+        toggleBtn.style.borderRadius = '4px';
+        toggleBtn.style.cursor = 'pointer';
+        toggleBtn.style.fontSize = '0.8rem';
+        toggleBtn.style.boxShadow = 'var(--box-shadow)';
+        
+        const legendContainer = document.createElement('div');
+        legendContainer.style.position = 'absolute';
+        legendContainer.style.top = margin.top + 'px';
+        legendContainer.style.right = '10px';
+        legendContainer.style.zIndex = '30';
+        legendContainer.style.display = 'none';
+        legendContainer.style.backgroundColor = 'var(--card-bg)';
+        legendContainer.style.border = '1px solid var(--border-color)';
+        legendContainer.style.borderRadius = '5px';
+        legendContainer.style.padding = '10px';
+        legendContainer.style.maxWidth = '250px';
+        legendContainer.style.maxHeight = '300px';
+        legendContainer.style.overflowY = 'auto';
+        legendContainer.style.boxShadow = 'var(--box-shadow)';
+        
+        const legendTitle = document.createElement('div');
+        legendTitle.style.fontWeight = 'bold';
+        legendTitle.style.marginBottom = '8px';
+        legendTitle.style.paddingBottom = '4px';
+        legendTitle.style.borderBottom = '1px solid var(--border-color)';
+        legendTitle.textContent = 'Simulation Paths (click to highlight)';
+        legendContainer.appendChild(legendTitle);
+        
+        simulations.forEach((path, index) => {
+            const finalValue = path[path.length - 1];
+            const profit = finalValue - initialBankroll;
+            const profitAbs = Math.abs(profit);
+            const profitFormatted = formatCurrency(profitAbs, false);
+            const profitSign = profit > 0 ? '+' : '-';
+            
+            // Format: "Sim 1: $394.99 (-$605.01)" or "Sim 2: $1,643.79 (+$643.79)"
+            const displayText = `Sim ${index + 1}: ${formatCurrency(finalValue, false)} (${profitSign}${profitFormatted})`;
+            
+            const item = document.createElement('div');
+            item.style.display = 'flex';
+            item.style.alignItems = 'center';
+            item.style.marginBottom = '5px';
+            item.style.cursor = 'pointer';
+            item.style.padding = '3px 5px';
+            item.style.borderRadius = '3px';
+            item.setAttribute('data-sim', index);
+            
+            const colorBox = document.createElement('span');
+            colorBox.style.display = 'inline-block';
+            colorBox.style.width = '15px';
+            colorBox.style.height = '15px';
+            colorBox.style.backgroundColor = colors[index % colors.length];
+            colorBox.style.marginRight = '8px';
+            colorBox.style.borderRadius = '3px';
+            
+            const text = document.createElement('span');
+            text.textContent = displayText;
+            
+            item.appendChild(colorBox);
+            item.appendChild(text);
+            
+            // Hover to temporarily highlight
+            item.addEventListener('mouseenter', () => {
+                if (highlightedIndex === -1) { // Only if no permanent highlight
+                    applyHighlight(index);
+                }
+            });
+            item.addEventListener('mouseleave', () => {
+                if (highlightedIndex === -1) {
+                    removeHighlight();
                 }
             });
             
-            // Set path attributes
-            pathElement.setAttribute('d', pathD);
-            pathElement.setAttribute('stroke', simIndex === 0 ? 'var(--secondary-color)' : 
-                                    `rgba(52, 152, 219, ${0.3 + (simIndex * 0.7 / simulations.length)})`);
-            pathElement.setAttribute('stroke-width', '1.5');
-            pathElement.setAttribute('fill', 'none');
-            pathElement.setAttribute('stroke-linecap', 'round');
-            pathElement.setAttribute('stroke-linejoin', 'round');
+            // Click to toggle permanent highlight
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (highlightedIndex === index) {
+                    // Unhighlight
+                    highlightedIndex = -1;
+                    removeHighlight();
+                } else {
+                    // Highlight this one
+                    highlightedIndex = index;
+                    applyHighlight(index);
+                }
+            });
             
-            svg.appendChild(pathElement);
-            simulationChart.appendChild(svg);
+            legendContainer.appendChild(item);
         });
         
-        // Add start point
-        const startPoint = document.createElement('div');
-        startPoint.className = 'chart-point';
-        startPoint.style.left = '50px';
-        startPoint.style.bottom = graphHeight - ((initialBankroll - minValue) / valueRange) * graphHeight + 'px';
-        startPoint.style.backgroundColor = 'var(--success-color)';
-        startPoint.title = `Start: ${formatCurrency(initialBankroll, false)}`;
-        simulationChart.appendChild(startPoint);
+        // Helper functions for highlighting
+        function applyHighlight(index) {
+            const lines = simulationChart.querySelectorAll('.sim-line');
+            lines.forEach((line, i) => {
+                if (i === index) {
+                    line.setAttribute('stroke-width', '3');
+                    line.setAttribute('opacity', '1');
+                } else {
+                    line.setAttribute('opacity', '0.2');
+                }
+            });
+        }
         
-        // Add end points for each simulation
-        simulations.forEach((path, simIndex) => {
-            const finalValue = path[path.length - 1];
-            const endY = graphHeight - ((finalValue - minValue) / valueRange) * graphHeight;
+        function removeHighlight() {
+            const lines = simulationChart.querySelectorAll('.sim-line');
+            lines.forEach(line => {
+                line.setAttribute('stroke-width', '1.5');
+                line.setAttribute('opacity', '1');
+            });
+        }
+        
+        // Toggle legend visibility
+        toggleBtn.addEventListener('click', () => {
+            if (legendContainer.style.display === 'none') {
+                legendContainer.style.display = 'block';
+                toggleBtn.innerHTML = '<i class="fas fa-times"></i> Hide Simulations';
+            } else {
+                legendContainer.style.display = 'none';
+                toggleBtn.innerHTML = '<i class="fas fa-list"></i> Show Simulations';
+            }
+        });
+        
+        simulationChart.appendChild(toggleBtn);
+        simulationChart.appendChild(legendContainer);
+        
+        // ===== TOOLTIP FUNCTION =====
+        function showTooltip(event, simIndex, path, initial, width, height, yMin, yMax) {
+            // Get mouse coordinates relative to the chart group
+            const svgRect = svg.getBoundingClientRect();
+            const mouseX = event.clientX - svgRect.left - margin.left;
+            const mouseY = event.clientY - svgRect.top - margin.top;
             
-            const endPoint = document.createElement('div');
-            endPoint.className = 'chart-point';
-            endPoint.style.left = 'calc(100% - 50px)';
-            endPoint.style.bottom = endY + 'px';
-            endPoint.style.backgroundColor = finalValue > initialBankroll ? 'var(--success-color)' : 'var(--accent-color)';
-            endPoint.style.opacity = simIndex === 0 ? '1' : '0.7';
-            endPoint.title = `Sim ${simIndex + 1}: ${formatCurrency(finalValue, false)}`;
-            simulationChart.appendChild(endPoint);
+            // Constrain to chart area
+            if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height) return;
+            
+            // Find closest bet index based on x coordinate
+            const betIndex = Math.round((mouseX / width) * numBets);
+            const value = path[betIndex];
+            const change = value - initial;
+            const changeAbs = Math.abs(change);
+            const changeSign = change > 0 ? '+' : '-';
+            
+            // Format tooltip content
+            tooltip.innerHTML = `
+                <strong>Simulation ${simIndex + 1}</strong><br>
+                Bet #${betIndex}<br>
+                Bankroll: ${formatCurrency(value, false)}<br>
+                Change: ${changeSign}${formatCurrency(changeAbs, false)}
+            `;
+            
+            // Position tooltip near mouse but within bounds
+            const tooltipX = event.clientX - svgRect.left + 15;
+            const tooltipY = event.clientY - svgRect.top - 40;
+            tooltip.style.left = tooltipX + 'px';
+            tooltip.style.top = tooltipY + 'px';
+            tooltip.style.display = 'block';
+            
+            // Stop propagation to prevent document click from immediately hiding
+            event.stopPropagation();
+        }
+        
+        // Hide tooltip when clicking elsewhere
+        document.addEventListener('click', function hideTooltip(e) {
+            if (!e.target.closest('.sim-line') && !e.target.closest('.sim-tooltip')) {
+                tooltip.style.display = 'none';
+            }
         });
     }
     

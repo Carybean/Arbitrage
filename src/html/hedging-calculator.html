@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hedging & Cash-Out Calculator | Bet Arbitrage Tools</title>
     <meta name="description" content="Calculate optimal hedge bets to lock in profits or minimize losses. Perfect for live betting situations and cash-out decisions.">
     <script type="application/ld+json">
@@ -56,8 +56,6 @@
                     </div>
                     
                     <ul class="quick-nav">
-                        <li><a href="#how-to-use"><i class="fas fa-play-circle"></i> How to Use</a></li>
-                        <li><a href="#calculator"><i class="fas fa-shield-alt"></i> Calculator</a></li>
                         <li><a href="#breakdown"><i class="fas fa-table"></i> Breakdown</a></li>
                     </ul>
 
@@ -76,79 +74,82 @@
         </div>
     </header>
 
+    <div class="container">
+        <!-- Instruction Section -->
+        <details class="instruction-section" id="how-to-use">
+            <summary><h2 style="display: inline-block;"> How to Use This Calculator <i class="fas fa-graduation-cap"></i></h2></summary>
+            <div class="instruction-content">
+                <p><strong>Hedging</strong> is placing a second bet against your original position to lock in profits or minimize losses. This calculator helps you make smart betting decisions in live betting situations.</p>
+                
+                <h3><i class="fas fa-list-ol"></i> Step-by-Step Guide:</h3>
+                <ol>
+                    <li><strong>Select Your Hedging Objective:</strong>
+                        <ul>
+                            <li><strong>Lock in Profit</strong> - When your original bet is winning</li>
+                            <li><strong>Cut Losses</strong> - When your original bet is losing</li>
+                            <li><strong>Break Even</strong> - Eliminate all risk entirely</li>
+                        </ul>
+                    </li>
+                    <li><strong>Enter Original Bet Details:</strong>
+                        <ul>
+                            <li><strong>Original Stake:</strong> Amount you originally bet</li>
+                            <li><strong>Original Odds:</strong> Odds you received when placing the bet</li>
+                        </ul>
+                    </li>
+                    <li><strong>Enter Current Market Conditions:</strong>
+                        <ul>
+                            <li><strong>Current Odds (Opposite):</strong> Current odds for the opposite outcome</li>
+                            <li><strong>Cash-Out Offer (Optional):</strong> Your bookmaker's cash-out offer for comparison</li>
+                        </ul>
+                    </li>
+                    <li><strong>Select Hedging Strategy:</strong> Choose how much profit to lock in or loss to reduce</li>
+                    <li><strong>Review Results:</strong> The calculator shows exactly how much to hedge and your guaranteed outcome</li>
+                </ol>
+                
+                <h3><i class="fas fa-balance-scale"></i> When to Hedge:</h3>
+                <div class="use-case-grid">
+                    <div class="use-case">
+                        <h4><i class="fas fa-lock text-success"></i> Lock in Profits</h4>
+                        <p>Your original bet is winning but the game situation has changed. Hedge to secure guaranteed profit instead of risking it all.</p>
+                        <p><strong>Example:</strong> You bet $100 at 3.00 odds (+$200 potential). The game is now close - hedge to lock in $80 guaranteed profit.</p>
+                    </div>
+                    <div class="use-case">
+                        <h4><i class="fas fa-cut text-warning"></i> Cut Losses</h4>
+                        <p>Your original bet is losing. Hedge to reduce your potential loss instead of losing your entire stake.</p>
+                        <p><strong>Example:</strong> You bet $100 at 3.00 odds but your team is losing. Hedge to reduce potential loss from $100 to $50.</p>
+                    </div>
+                    <div class="use-case">
+                        <h4><i class="fas fa-exchange-alt text-info"></i> Live Betting Opportunities</h4>
+                        <p>Odds have moved significantly in your favor. Hedge to take advantage of arbitrage opportunities.</p>
+                        <p><strong>Example:</strong> You got 3.00 odds, current opposite odds are 1.80. You can hedge for guaranteed profit.</p>
+                    </div>
+                </div>
+                
+                <h3><i class="fas fa-lightbulb"></i> Pro Tips:</h3>
+                <ul>
+                    <li><strong>Always compare with cash-out:</strong> Bookmakers often offer worse value than hedging yourself</li>
+                    <li><strong>Consider partial hedging:</strong> Locking 50-70% profit keeps some upside potential</li>
+                    <li><strong>Factor in betting fees:</strong> Some bookmakers charge fees on winnings</li>
+                    <li><strong>Hedge early in live games:</strong> Odds can change rapidly during events</li>
+                    <li><strong>Use multiple bookmakers:</strong> Get the best odds for your hedge bet</li>
+                </ul>
+                
+                <div class="important-note">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Important Notes:</h4>
+                    <ul>
+                        <li>Hedging guarantees an outcome but eliminates potential for maximum profit</li>
+                        <li>Some bookmakers restrict or limit hedging activities</li>
+                        <li>Always verify current odds before placing hedge bets</li>
+                        <li>This calculator assumes you can place bets at the displayed odds</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </div>
+
     <!-- Main Content -->
     <div class="container">
         <div class="main-content">
-            <!-- Instruction Section -->
-            <details class="instruction-section" id="how-to-use">
-                <summary><h2 style="display: inline-block;"> How to Use This Calculator <i class="fas fa-graduation-cap"></i></h2></summary>
-                <div class="instruction-content">
-                    <p><strong>Hedging</strong> is placing a second bet against your original position to lock in profits or minimize losses. This calculator helps you make smart betting decisions in live betting situations.</p>
-                    
-                    <h3><i class="fas fa-list-ol"></i> Step-by-Step Guide:</h3>
-                    <ol>
-                        <li><strong>Select Your Hedging Objective:</strong>
-                            <ul>
-                                <li><strong>Lock in Profit</strong> - When your original bet is winning</li>
-                                <li><strong>Cut Losses</strong> - When your original bet is losing</li>
-                                <li><strong>Break Even</strong> - Eliminate all risk entirely</li>
-                            </ul>
-                        </li>
-                        <li><strong>Enter Original Bet Details:</strong>
-                            <ul>
-                                <li><strong>Original Stake:</strong> Amount you originally bet</li>
-                                <li><strong>Original Odds:</strong> Odds you received when placing the bet</li>
-                            </ul>
-                        </li>
-                        <li><strong>Enter Current Market Conditions:</strong>
-                            <ul>
-                                <li><strong>Current Odds (Opposite):</strong> Current odds for the opposite outcome</li>
-                                <li><strong>Cash-Out Offer (Optional):</strong> Your bookmaker's cash-out offer for comparison</li>
-                            </ul>
-                        </li>
-                        <li><strong>Select Hedging Strategy:</strong> Choose how much profit to lock in or loss to reduce</li>
-                        <li><strong>Review Results:</strong> The calculator shows exactly how much to hedge and your guaranteed outcome</li>
-                    </ol>
-                    
-                    <h3><i class="fas fa-balance-scale"></i> When to Hedge:</h3>
-                    <div class="use-case-grid">
-                        <div class="use-case">
-                            <h4><i class="fas fa-lock text-success"></i> Lock in Profits</h4>
-                            <p>Your original bet is winning but the game situation has changed. Hedge to secure guaranteed profit instead of risking it all.</p>
-                            <p><strong>Example:</strong> You bet $100 at 3.00 odds (+$200 potential). The game is now close - hedge to lock in $80 guaranteed profit.</p>
-                        </div>
-                        <div class="use-case">
-                            <h4><i class="fas fa-cut text-warning"></i> Cut Losses</h4>
-                            <p>Your original bet is losing. Hedge to reduce your potential loss instead of losing your entire stake.</p>
-                            <p><strong>Example:</strong> You bet $100 at 3.00 odds but your team is losing. Hedge to reduce potential loss from $100 to $50.</p>
-                        </div>
-                        <div class="use-case">
-                            <h4><i class="fas fa-exchange-alt text-info"></i> Live Betting Opportunities</h4>
-                            <p>Odds have moved significantly in your favor. Hedge to take advantage of arbitrage opportunities.</p>
-                            <p><strong>Example:</strong> You got 3.00 odds, current opposite odds are 1.80. You can hedge for guaranteed profit.</p>
-                        </div>
-                    </div>
-                    
-                    <h3><i class="fas fa-lightbulb"></i> Pro Tips:</h3>
-                    <ul>
-                        <li><strong>Always compare with cash-out:</strong> Bookmakers often offer worse value than hedging yourself</li>
-                        <li><strong>Consider partial hedging:</strong> Locking 50-70% profit keeps some upside potential</li>
-                        <li><strong>Factor in betting fees:</strong> Some bookmakers charge fees on winnings</li>
-                        <li><strong>Hedge early in live games:</strong> Odds can change rapidly during events</li>
-                        <li><strong>Use multiple bookmakers:</strong> Get the best odds for your hedge bet</li>
-                    </ul>
-                    
-                    <div class="important-note">
-                        <h4><i class="fas fa-exclamation-triangle"></i> Important Notes:</h4>
-                        <ul>
-                            <li>Hedging guarantees an outcome but eliminates potential for maximum profit</li>
-                            <li>Some bookmakers restrict or limit hedging activities</li>
-                            <li>Always verify current odds before placing hedge bets</li>
-                            <li>This calculator assumes you can place bets at the displayed odds</li>
-                        </ul>
-                    </div>
-                </div>
-            </details>
 
             <!-- Calculator Section -->
             <section class="calculator-section" id="calculator">

@@ -154,6 +154,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 message: 'American odds must start with + or - (e.g., +150 or -200)' 
             };
         }
+
+        if ((!/^[0-9+-]*$/.test(str)) || (str.includes("+") && str.indexOf("+") !== 0) || (str.includes("-") && str.indexOf("-") !== 0) || (/([+-]).*?\1/.test(str))) {
+            return {
+                valid: false,
+                message: 'American odds must be valid'
+            };
+        }
         
         const numericPart = str.substring(1);
         const num = parseFloat(numericPart);
@@ -204,8 +211,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorElement.classList.add('show');
                 return { valid: false };
             }
+            else if ((!/^[0-9.]*$/.test(oddsStr)) || (/([.]).*?\1/.test(oddsStr))) {
+                inputElement.classList.add('invalid-input');
+                errorElement.textContent = 'Decimal odds must be valid';
+                errorElement.classList.add('show');
+                return { valid: false };
+            }
         } else if (format === 'fractional') {
-            if (!oddsStr.includes('/')) {
+            if (!oddsStr.includes('/') || (!/^[0-9/]*$/.test(oddsStr)) || (/([/]).*?\1/.test(oddsStr))) {
                 inputElement.classList.add('invalid-input');
                 errorElement.textContent = 'Fractional odds must be in format X/Y (e.g., 3/1)';
                 errorElement.classList.add('show');
@@ -230,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const originalOddsStr = originalOddsInput.value.trim();
         const currentOddsStr = currentOddsInput.value.trim();
         
-        if (isNaN(originalStake) || originalStake <= 0) return false;
+        if (isNaN(originalStake) || originalStake <= 0 || (!/^[0-9.]*$/.test(originalStakeInput.value)) || (/([.]).*?\1/.test(originalStakeInput.value))) return false;
         if (originalOddsStr === '' || currentOddsStr === '') return false;
         
         const originalValidation = validateOddsInput(originalOddsInput, originalOddsError);
