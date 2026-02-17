@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Arbitrage Betting Calculator",
   "main": "index.js",
-  "scripts": {"build": "mkdir dist && mkdir dist\\js && mkdir dist\\css && mkdir dist\\assets && for %f in (src\\js\\*.js) do terser \"%f\" -o \"dist\\js\\%~nxf\" --compress --mangle && for %f in (dist\\js\\*.js) do javascript-obfuscator \"%f\" --output \"%f\" && for %f in (src\\css\\*.css) do cleancss \"%f\" -o \"dist\\css\\%~nxf\" && for %f in (src\\html\\*.html) do npx html-minifier-cli \"%f\" -o \"dist\\%~nxf\" --collapse-whitespace --remove-comments && xcopy src\\assets dist\\assets /E /I /Y && copy CNAME dist"
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "predeploy": "npm run build",
+    "deploy": "git add . && git add dist -f && git commit -m \"Build: update\" && git subtree push --prefix dist origin gh-pages"
   },
   "keywords": [
     "betting",
@@ -18,7 +22,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "chokidar": "^5.0.0",
     "clean-css-cli": "^5.6.3",
+    "fs-extra": "^11.3.3",
+    "glob": "^13.0.5",
     "html-minifier-cli": "^0.1.0",
     "javascript-obfuscator": "^5.3.0",
     "terser": "^5.46.0"
