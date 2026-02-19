@@ -55,6 +55,8 @@ async function runBuild() {
     console.log("📂 Copying assets...");
     fs.copySync('src/assets', 'dist/assets');
     if (fs.existsSync('CNAME')) fs.copySync('CNAME', 'dist/CNAME');
+    if (fs.existsSync('sitemap.xml')) fs.copySync('sitemap.xml', 'dist/sitemap.xml');
+    if (fs.existsSync('robots.txt')) fs.copySync('robots.txt', 'dist/robots.txt');
     
     console.log("✅ Build complete!");
 }
