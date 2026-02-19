@@ -4,15 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelly Criterion Calculator | Bet Arbitrage Tools</title>
-    <meta name="description" content="Calculate optimal bet sizing using Kelly Criterion. Maximize long-term bankroll growth while minimizing risk of ruin.">
+    <meta name="description" content="Calculate optimal bet sizing using Kelly Criterion. Maximize long-term bankroll growth while minimizing risk of ruin with our free simulation tool.">
+    <link rel="canonical" href="https://betarbingcalculator.com/kelly-calculator.html">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="betarbingcalculator.com">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://betarbingcalculator.com/kelly-calculator.html">
+    <meta property="og:title" content="Kelly Criterion Calculator | Optimal Bet Sizing Tool">
+    <meta property="og:description" content="Maximize long-term bankroll growth. Calculate Full, Half, and Quarter Kelly fractions with our advanced growth simulator.">
+    <meta property="og:image" content="https://betarbingcalculator.com/../assets/image.png">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Kelly Criterion Calculator">
+    <meta property="twitter:description" content="Free tool to calculate optimal betting stakes and simulate bankroll growth.">
+    <meta property="twitter:image" content="https://betarbingcalculator.com/../assets/image.png">
+
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": "Kelly Criterion Calculator",
-            "url": "https://betarbingcalculator.com/kelly-calculator.html"
+            "@graph": [
+                {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": "https://betarbingcalculator.com/"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": "Kelly Criterion Calculator",
+                            "item": "https://betarbingcalculator.com/kelly-calculator.html"
+                        }
+                    ]
+                },
+                {
+                    "@type": "WebApplication",
+                    "name": "Kelly Criterion Calculator",
+                    "url": "https://betarbingcalculator.com/kelly-calculator.html",
+                    "applicationCategory": "FinanceApplication",
+                    "operatingSystem": "All",
+                    "description": "A professional-grade Kelly Criterion calculator that supports Decimal, Fractional, and American odds. Includes fractional Kelly options and a bankroll growth simulator.",
+                    "offers": {
+                        "@type": "Offer",
+                        "price": "0",
+                        "priceCurrency": "USD"
+                    },
+                    "featureList": [
+                        "Fractional Kelly Sizing (1/2, 1/4, 1/8)",
+                        "Bankroll Growth Simulation Chart",
+                        "Multi-format Odds Support",
+                        "Risk of Ruin Analysis",
+                        "Dark Mode Responsive Design"
+                    ]
+                }
+            ]
         }
     </script>
+
     <link rel="icon" type="image/x-icon" href="../assets/faviconico.ico" sizes="any">
     <link rel="icon" type="image/svg+xml" href="../assets/faviconsvg.svg">
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
@@ -31,6 +81,9 @@
             gtag('config', 'G-Q3EJB4E93Z');
         }
     </script>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <!-- Header with Navigation -->
@@ -321,6 +374,96 @@
                 <i class="fas fa-fingerprint"></i> Professional setup? Use <a href="https://gologin.com/join/betcalculator-IPIJIBD" style="color: var(--accent-color);" target="_blank" rel="nofollow sponsored">Gologin</a> for isolated browser profiles
             </p>
         </div>
+    </div>
+
+    <div class="container">      
+        <section class="expert-guide-section mb-20">
+            <h2><i class="fas fa-university"></i> The Mathematics of Wealth Growth: Kelly Criterion Deep Dive</h2>
+            
+            <div class="expert-content">
+                <p class="mb-10">
+                    In the world of professional gambling and stock market investing, the <strong>Kelly Criterion</strong> is often cited as the "Holy Grail" of bankroll management. Developed by John L. Kelly in 1956, this formula is designed to maximize the long-term growth of your capital by calculating the mathematically perfect stake for every bet based on your perceived edge. Unlike arbitrary staking plans, Kelly provides a disciplined, mathematical framework for wealth accumulation.
+                </p>
+
+                <h3 class="mb-10"><i class="fas fa-percentage"></i> The Mathematical Engine</h3>
+                <p class="mb-10">
+                    The power of the Kelly Criterion lies in its ability to balance the desire for profit with the necessity of survival. Unlike "Flat Betting" (where you bet the same amount every time), Kelly scales with your bankroll. When your bankroll grows, your stakes increase proportionally, compounding your gains. When it shrinks, stakes decrease, preserving your capital during inevitable losing streaks.
+                </p>
+                
+                <div style="background: rgba(155, 89, 182, 0.1); padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; margin: 20px 0; border: 1px dashed #9b59b6;">
+                    <p style="text-align: center; font-size: 1.2rem; margin-bottom: 10px;"><strong>The Master Formula:</strong></p>
+                    <p style="text-align: center; font-size: 1.5rem;">$$f^* = \frac{bp - q}{b} = \frac{bp - (1-p)}{b}$$</p>
+                    <div style="font-size: 0.9rem; margin-top: 15px;">
+                        <strong>$f^*$</strong> = The fraction of your current bankroll to bet.<br>
+                        <strong>$b$</strong> = The decimal odds minus 1 (the net profit you receive per unit bet).<br>
+                        <strong>$p$</strong> = Your estimated probability of winning (as a decimal).<br>
+                        <strong>$q$</strong> = The probability of losing ($1 - p$).
+                    </div>
+                </div>
+                
+                <p class="mb-10">For example, if you have a 55% chance of winning ($p=0.55$) on a bet with decimal odds of 2.10 ($b=1.10$), the calculation is $f^* = (1.10 * 0.55 - 0.45) / 1.10 = 0.155 / 1.10 = 0.14$. The formula suggests betting 14% of your bankroll.</p>
+
+                <h3 class="mb-10"><i class="fas fa-layer-group"></i> Fractional Kelly: The Professional's Choice</h3>
+                <p class="mb-10">
+                    While "Full Kelly" is mathematically optimal for maximizing long-term growth, it comes with a significant caveat: extreme volatility. Because the formula assumes your probability estimates are perfectly accurate (which they rarely are), Full Kelly can lead to massive "Drawdowns" (large percentage drops in your bankroll). A few consecutive losses can cut your bankroll in half, testing the psychological fortitude of even the most disciplined bettor. This is why most professional bettors use <strong>Fractional Kelly</strong> to reduce risk while still capturing most of the growth:
+                </p>
+                <ul>
+                    <li class="mb-10"><strong>Half-Kelly (0.5x):</strong> You bet 50% of the stake suggested by Full Kelly. This reduces volatility by approximately 50% while only sacrificing about 25% of the theoretical long-term growth rate. It is the sweet spot for aggressive professionals.</li>
+                    <li class="mb-10"><strong>Quarter-Kelly (0.25x):</strong> The most common choice for serious, long-term bettors. It provides a massive safety buffer against "Variance" (unlucky streaks) and significantly reduces the chance of a ruinous drawdown, ensuring you can stay in the game for years.</li>
+                </ul>
+
+                <h3 class="mb-10"><i class="fas fa-table"></i> Comparing Betting Strategies</h3>
+                <p class="mb-10">Why professionals ignore the allure of systems like the Martingale and consistently rely on a Kelly-based approach:</p>
+                
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 0.9rem;">
+                        <thead>
+                            <tr style="background-color: var(--secondary-color); color: white;">
+                                <th style="padding: 10px; border: 1px solid #ddd;">Strategy</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Risk Level</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Core Logic</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Long-Term Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Flat Betting</strong></td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Low</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Fixed stake regardless of bankroll or edge.</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Slow, linear growth; fails to capitalize on high-confidence opportunities.</td>
+                            </tr>
+                            <tr style="background-color: rgba(0,0,0,0.05);">
+                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Martingale</strong></td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Extreme</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Doubling stake after every loss to recoup previous losses.</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Guaranteed "Bust" (Bankruptcy) due to finite bankrolls and table limits.</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Kelly Criterion</strong></td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Dynamic</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Stake scales with bankroll size and the perceived edge.</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Maximum compound growth over time, with built-in risk management.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="mb-10"><i class="fas fa-exclamation-circle"></i> The "Garbage In, Garbage Out" Warning</h3>
+                <p class="mb-10">
+                    The Kelly Criterion is a mathematically sound engine, but it requires high-quality fuel. It is 100% accurate in its calculation, but only if your <strong>Win Probability ($p$)</strong> is accurate. 
+                </p>
+                <p class="mb-10">
+                    If you overestimate your edge, the formula will tell you to bet too much, exposing you to unnecessary risk and potential ruin. Conversely, underestimating your edge leads to suboptimal growth. This is why the Kelly Criterion is never used in isolation; it is the final step in a rigorous process.
+                </p>
+                <p class="mb-10">
+                    Professionals always pair the Kelly Criterion with a method for finding accurate probabilities. They often use our <a href="ev-calculator.html">EV Calculator</a> first to determine the "Fair Odds" and confirm a positive expected value. Only then do they feed that probability into the Kelly formula to decide the stake, ensuring the input is as accurate as possible.
+                </p>
+                
+                <p class="mb-10">
+                    Ready to grow your bankroll sustainably? Enter your bankroll size, the decimal odds, and your estimated win percentage into our tool above to calculate your optimal stake in seconds.
+                </p>
+            </div>
+        </section>
     </div>
 
     <!-- FAQ Section -->
