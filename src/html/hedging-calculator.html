@@ -235,13 +235,13 @@
                         <h3>Original Bet Details</h3>
                         <div class="input-group">
                             <label for="original-stake">Original Stake: </label>
-                            <input type="text" id="original-stake" inputmode="decimal" maxlength="13" min="0" placeholder="e.g., 100" value="100">
+                            <input type="text" id="original-stake" inputmode="text" maxlength="13" min="0" placeholder="e.g., 100" value="100">
                         </div>
                         <div class="input-hint">Amount you originally bet</div>
                         
                         <div class="input-group">
                             <label for="original-odds">Original Odds: </label>
-                            <input type="text" inputmode="decimal" maxlength="13" id="original-odds" placeholder="e.g., 3.00" value="3.00">
+                            <input type="text" inputmode="text" maxlength="13" id="original-odds" placeholder="e.g., 3.00" value="3.00">
                         </div>
                         <div class="input-hint">Odds when you placed the original bet</div>
                         <div class="error-message" id="original-odds-error"></div>
@@ -250,14 +250,14 @@
                         
                         <div class="input-group">
                             <label for="current-odds">Current Odds (Opposite): </label>
-                            <input type="text" id="current-odds" inputmode="decimal" maxlength="13" placeholder="e.g., 2.50" value="2.50">
+                            <input type="text" id="current-odds" inputmode="text" maxlength="13" placeholder="e.g., 2.50" value="2.50">
                         </div>
                         <div class="input-hint">Current odds for the opposite outcome</div>
                         <div class="error-message" id="current-odds-error"></div>
                         
                         <div class="input-group">
                             <label for="cashout-offer">Cash-Out Offer (Optional): </label>
-                            <input type="text" inputmode="decimal" id="cashout-offer" maxlength="13" min="0" placeholder="e.g., 150">
+                            <input type="text" inputmode="text" id="cashout-offer" maxlength="13" min="0" placeholder="e.g., 150">
                         </div>
                         <div class="input-hint">Bookmaker's cash-out offer (if available)</div>
                     </div>
@@ -743,5 +743,42 @@
     <script>window.gtranslateSettings = {"default_language":"en","native_language_names":true,"detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper","flag_size":15,"switcher_horizontal_position":"inline","switcher_vertical_position":"top","alt_flags":{"en":"usa"}}</script>
     <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
     <script src="../js/hedging-calculator.js"></script>
+    <!-- Custom Keyboard -->
+    <div id="custom-keyboard" class="custom-keyboard hidden">
+        <div class="keyboard-header">
+            <button type="button" class="keyboard-close" id="keyboard-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="keyboard-grid">
+            <button type="button" class="key-btn" data-value="1">1</button>
+            <button type="button" class="key-btn" data-value="2">2</button>
+            <button type="button" class="key-btn" data-value="3">3</button>
+            <button type="button" class="key-btn" data-value="/">/</button>
+            
+            <button type="button" class="key-btn" data-value="4">4</button>
+            <button type="button" class="key-btn" data-value="5">5</button>
+            <button type="button" class="key-btn" data-value="6">6</button>
+            <button type="button" class="key-btn" data-value="-">-</button>
+            
+            <button type="button" class="key-btn" data-value="7">7</button>
+            <button type="button" class="key-btn" data-value="8">8</button>
+            <button type="button" class="key-btn" data-value="9">9</button>
+            <button type="button" class="key-btn" data-value="+">+</button>
+            
+            <button type="button" class="key-btn" data-value="0">0</button>
+            <button type="button" class="key-btn" data-value=".">.</button>
+            <button type="button" class="key-btn clear" id="key-clear">C</button>
+            <button type="button" class="key-btn delete" id="key-delete">
+                <i class="fas fa-backspace"></i>
+            </button>
+            
+        </div>
+        <div class="keyboard-footer">
+            <button type="button" class="keyboard-done" id="keyboard-done">
+                <i class="fas fa-check"></i> Done
+            </button>
+        </div>
+    </div>
 </body>
 </html>

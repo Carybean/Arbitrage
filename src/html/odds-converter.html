@@ -192,7 +192,7 @@
                             <div class="input-group">
                                 <label id="input-label">Enter Decimal Odds:</label>
                                 <div class="input-with-example">
-                                    <input type="text" id="odds-input" inputmode="decimal" placeholder="e.g., 2.50" maxlength="13">
+                                    <input type="text" id="odds-input" inputmode="text" placeholder="e.g., 2.50" maxlength="13">
                                     <div class="input-example" id="input-example">Example: 2.50</div>
                                 </div>
                             </div>
@@ -725,5 +725,42 @@
     <script>window.gtranslateSettings = {"default_language":"en","native_language_names":true,"detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper","flag_size":15,"switcher_horizontal_position":"inline","switcher_vertical_position":"top","alt_flags":{"en":"usa"}}</script>
     <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
     <script src="../js/odds-converter.js"></script>
+    <!-- Custom Keyboard -->
+    <div id="custom-keyboard" class="custom-keyboard hidden">
+        <div class="keyboard-header">
+            <button type="button" class="keyboard-close" id="keyboard-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="keyboard-grid">
+            <button type="button" class="key-btn" data-value="1">1</button>
+            <button type="button" class="key-btn" data-value="2">2</button>
+            <button type="button" class="key-btn" data-value="3">3</button>
+            <button type="button" class="key-btn" data-value="/">/</button>
+            
+            <button type="button" class="key-btn" data-value="4">4</button>
+            <button type="button" class="key-btn" data-value="5">5</button>
+            <button type="button" class="key-btn" data-value="6">6</button>
+            <button type="button" class="key-btn" data-value="-">-</button>
+            
+            <button type="button" class="key-btn" data-value="7">7</button>
+            <button type="button" class="key-btn" data-value="8">8</button>
+            <button type="button" class="key-btn" data-value="9">9</button>
+            <button type="button" class="key-btn" data-value="+">+</button>
+            
+            <button type="button" class="key-btn" data-value="0">0</button>
+            <button type="button" class="key-btn" data-value=".">.</button>
+            <button type="button" class="key-btn clear" id="key-clear">C</button>
+            <button type="button" class="key-btn delete" id="key-delete">
+                <i class="fas fa-backspace"></i>
+            </button>
+            
+        </div>
+        <div class="keyboard-footer">
+            <button type="button" class="keyboard-done" id="keyboard-done">
+                <i class="fas fa-check"></i> Done
+            </button>
+        </div>
+    </div>
 </body>
 </html>

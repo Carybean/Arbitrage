@@ -41,6 +41,166 @@ themeSwitch.addEventListener('change', function() {
     }
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+
+    // Track active input
+    let activeInput = null;
+
+    // Get keyboard elements
+    const customKeyboard = document.getElementById('custom-keyboard');
+    const keyboardClose = document.getElementById('keyboard-close');
+    const keyboardDone = document.getElementById('keyboard-done');
+    const keyDelete = document.getElementById('key-delete');
+    const keyClear = document.getElementById('key-clear');
+
+    // Function to open custom keyboard
+    function openCustomKeyboard(input) {
+        if (!isMobile()) return; // Only on mobile
+        
+        activeInput = input;
+        customKeyboard.classList.remove('hidden');
+        
+        // Prevent body scrolling
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Function to close custom keyboard
+    function closeCustomKeyboard() {
+        customKeyboard.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // Prevent actual keyboard from opening (mobile only)
+    document.addEventListener('focusin', function(e) {
+        // Only apply on mobile
+        if (!isMobile()) return;
+        
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            // Don't interfere with our keyboard buttons
+            if (e.target.closest('.custom-keyboard')) return;
+            
+            // For all other inputs, prevent default and open custom keyboard
+            e.preventDefault();
+            
+            // Make input read-only to prevent actual keyboard
+            e.target.setAttribute('readonly', true);
+            
+            // Open custom keyboard
+            openCustomKeyboard(e.target);
+        }
+    });
+
+    // Handle keyboard button clicks
+    document.querySelectorAll('.key-btn[data-value]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (!isMobile() || !activeInput) return;
+            
+            const value = this.dataset.value;
+            
+            // Validate based on odds format
+            const format = document.querySelector('.odds-type-btn.active')?.dataset.format || 'decimal';
+            
+            // Basic validation - prevent multiple operators
+            const currentValue = activeInput.value;
+            const lastChar = currentValue.slice(-1);
+            const operators = ['+', '-', '/', '.'];
+            
+            if (operators.includes(value) && operators.includes(lastChar)) {
+                return; // Don't allow two operators in a row
+            }
+            
+            // For fractional odds, prevent multiple slashes
+            if (format === 'fractional' && value === '/' && currentValue.includes('/')) {
+                return;
+            }
+            
+            // For decimal odds, prevent multiple decimals
+            if (format === 'decimal' && value === '.' && currentValue.includes('.')) {
+                return;
+            }
+            
+            activeInput.value += value;
+            
+            // Trigger input event
+            activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    });
+
+    // Delete button (backspace)
+    keyDelete.addEventListener('click', function() {
+        if (!isMobile() || !activeInput) return;
+        
+        activeInput.value = activeInput.value.slice(0, -1);
+        
+        // Trigger input event
+        activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    // Clear button
+    keyClear.addEventListener('click', function() {
+        if (!isMobile() || !activeInput) return;
+        
+        activeInput.value = '';
+        
+        // Trigger input event
+        activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+
+    // Done button
+    keyboardDone.addEventListener('click', function() {
+        if (!isMobile() || !activeInput) return;
+        
+        // Remove readonly attribute
+        activeInput.removeAttribute('readonly');
+        activeInput.blur();
+        closeCustomKeyboard();
+    });
+
+    // Close button
+    keyboardClose.addEventListener('click', function() {
+        if (!isMobile() || !activeInput) return;
+        
+        activeInput.removeAttribute('readonly');
+        activeInput.blur();
+        closeCustomKeyboard();
+    });
+
+    // Handle window resize (switch between mobile/desktop)
+    window.addEventListener('resize', function() {
+        if (!isMobile()) {
+            // If switching to desktop, close keyboard and remove readonly from all inputs
+            customKeyboard.classList.add('hidden');
+            document.body.style.overflow = '';
+            
+            // Remove readonly from all inputs
+            document.querySelectorAll('input[readonly]').forEach(input => {
+                input.removeAttribute('readonly');
+            });
+            
+            activeInput = null;
+        }
+    });
+
+    // Close keyboard when clicking outside (mobile only)
+    document.addEventListener('click', function(e) {
+        if (!isMobile()) return;
+        
+        if (!customKeyboard.contains(e.target) && 
+            !e.target.matches('input, textarea') && 
+            !customKeyboard.classList.contains('hidden')) {
+            
+            if (activeInput) {
+                activeInput.removeAttribute('readonly');
+                activeInput.blur();
+            }
+            closeCustomKeyboard();
+        }
+    });
+});
+
 function handleDetailsForScreen() {
     const detailsList = document.querySelectorAll("details.instruction-section");
     if (window.innerWidth >= 768) {

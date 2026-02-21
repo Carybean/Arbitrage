@@ -178,7 +178,7 @@
                         </div>
                         <div class="input-group">
                             <label for="first-odd">Bet 1 :</label>
-                            <input id="first-odd" type="text" inputmode="decimal" placeholder="Enter odds (e.g., 2.50, 3/2, +150)" maxlength="10">
+                            <input id="first-odd" type="text" inputmode="text" placeholder="Enter odds (e.g., 2.50, 3/2, +150)" maxlength="10">
                             <span class="error-message"></span>
                         </div>
                     </div>
@@ -193,7 +193,7 @@
                         </div>
                         <div class="input-group">
                             <label for="second-odd">Bet 2 :</label>
-                            <input id="second-odd" type="text" inputmode="decimal" placeholder="Enter odds (e.g., 2.50, 3/2, +150)" maxlength="10">
+                            <input id="second-odd" type="text" inputmode="text" placeholder="Enter odds (e.g., 2.50, 3/2, +150)" maxlength="10">
                             <span class="error-message"></span>
                         </div>
                     </div>
@@ -211,7 +211,7 @@
                                     </div>
                                     <div class="input-group">
                                         <label for="third-odd">Bet <span id="spanco3">3</span> :</label>
-                                        <input class="third" id="third-odd" type="text" inputmode="decimal" placeholder="Enter odds" maxlength="10">
+                                        <input class="third" id="third-odd" type="text" inputmode="text" placeholder="Enter odds" maxlength="10">
                                         <span class="error-message"></span>
                                     </div>
                                 </div>
@@ -249,7 +249,7 @@
                         </div>
                         <div class="input-label">
                             <label for="amount">Total Stake :</label>
-                            <input class="amount" id="amount" type="text" inputmode="decimal" placeholder="Enter total staking amount" maxlength="13" required>
+                            <input class="amount" id="amount" type="text" inputmode="text" placeholder="Enter total staking amount" maxlength="13" required>
                             <div id="special-error"></div>
                         </div>
                     </div>
@@ -460,5 +460,43 @@
     <script>window.gtranslateSettings = {"default_language":"en","native_language_names":true,"detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper","flag_size":15,"switcher_horizontal_position":"inline","switcher_vertical_position":"top","alt_flags":{"en":"usa"}}</script>
     <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
     <script src="../js/arbLogic.js"></script> 
+    
+    <!-- Custom Keyboard -->
+    <div id="custom-keyboard" class="custom-keyboard hidden">
+        <div class="keyboard-header">
+            <button type="button" class="keyboard-close" id="keyboard-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="keyboard-grid">
+            <button type="button" class="key-btn" data-value="1">1</button>
+            <button type="button" class="key-btn" data-value="2">2</button>
+            <button type="button" class="key-btn" data-value="3">3</button>
+            <button type="button" class="key-btn" data-value="/">/</button>
+            
+            <button type="button" class="key-btn" data-value="4">4</button>
+            <button type="button" class="key-btn" data-value="5">5</button>
+            <button type="button" class="key-btn" data-value="6">6</button>
+            <button type="button" class="key-btn" data-value="-">-</button>
+            
+            <button type="button" class="key-btn" data-value="7">7</button>
+            <button type="button" class="key-btn" data-value="8">8</button>
+            <button type="button" class="key-btn" data-value="9">9</button>
+            <button type="button" class="key-btn" data-value="+">+</button>
+            
+            <button type="button" class="key-btn" data-value="0">0</button>
+            <button type="button" class="key-btn" data-value=".">.</button>
+            <button type="button" class="key-btn clear" id="key-clear">C</button>
+            <button type="button" class="key-btn delete" id="key-delete">
+                <i class="fas fa-backspace"></i>
+            </button>
+            
+        </div>
+        <div class="keyboard-footer">
+            <button type="button" class="keyboard-done" id="keyboard-done">
+                <i class="fas fa-check"></i> Done
+            </button>
+        </div>
+    </div>
 </body>
 </html>

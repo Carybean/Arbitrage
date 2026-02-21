@@ -1212,3 +1212,129 @@ dialog::backdrop {
 .hidden {
     display: none;
 }
+
+
+/* Custom Keyboard Styles - Mobile Only */
+@media (min-width: 769px) {
+    .custom-keyboard {
+        display: none !important; 
+    }
+}
+
+@media (max-width: 768px) {
+    .custom-keyboard {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: var(--card-bg);
+        border-top: 2px solid var(--secondary-color);
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+        z-index: 1000000;
+        padding: 15px;
+        animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+
+    .custom-keyboard.hidden {
+        display: none;
+    }
+
+    .keyboard-header {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 10px;
+    }
+
+    .keyboard-close {
+        background: none;
+        border: none;
+        color: var(--gray-color);
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 5px 10px;
+    }
+
+    .keyboard-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .key-btn {
+        background-color: var(--light-color);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        padding: 10px 0;
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: var(--text-color);
+        cursor: pointer;
+        transition: all 0.1s ease;
+        text-align: center;
+        -webkit-tap-highlight-color: transparent; 
+    }
+
+    .key-btn:active {
+        background-color: var(--secondary-color);
+        color: white;
+        transform: scale(0.95);
+        border-color: var(--secondary-color);
+    }
+
+    .key-btn.delete, 
+    .key-btn.clear {
+        background-color: var(--accent-color);
+        color: white;
+        border-color: var(--accent-color);
+    }
+
+    .key-btn.delete:active,
+    .key-btn.clear:active {
+        background-color: #c0392b;
+        transform: scale(0.95);
+    }
+
+    .keyboard-footer {
+        margin-top: 5px;
+    }
+
+    .keyboard-done {
+        width: 100%;
+        background-color: var(--success-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 15px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.1s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .keyboard-done:active {
+        background-color: #219653;
+        transform: scale(0.98);
+    }
+
+    /* Dark mode adjustments */
+    [data-theme="dark"] .key-btn {
+        background-color: var(--card-bg);
+        border-color: var(--border-color);
+    }
+
+    [data-theme="dark"] .key-btn:active {
+        background-color: var(--secondary-color);
+        color: var(--dark-color);
+    }
+}

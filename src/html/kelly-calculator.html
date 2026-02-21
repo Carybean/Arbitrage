@@ -173,7 +173,7 @@
                     <div class="input-section">
                         <div class="input-group">
                             <label for="bankroll-input">Bankroll:</label>
-                            <input type="text" inputmode="decimal" maxlength="13" id="bankroll-input" min="0" placeholder="e.g., 1000" value="1000">
+                            <input type="text" inputmode="text" maxlength="13" id="bankroll-input" min="0" placeholder="e.g., 1000" value="1000">
                         </div>
                         
                         <div class="input-group">
@@ -187,7 +187,7 @@
                         
                         <div class="input-group">
                             <label for="odds-input">Odds:</label>
-                            <input type="text" inputmode="decimal" maxlength="13" id="odds-input" placeholder="e.g., 2.50">
+                            <input type="text" inputmode="text" maxlength="13" id="odds-input" placeholder="e.g., 2.50">
                             <div class="error-message" id="odds-error"></div>
                         </div>
                         
@@ -536,5 +536,42 @@
     <script>window.gtranslateSettings = {"default_language":"en","native_language_names":true,"detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper","flag_size":15,"switcher_horizontal_position":"inline","switcher_vertical_position":"top","alt_flags":{"en":"usa"}}</script>
     <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
     <script src="../js/kelly-calculator.js"></script>
+    <!-- Custom Keyboard -->
+    <div id="custom-keyboard" class="custom-keyboard hidden">
+        <div class="keyboard-header">
+            <button type="button" class="keyboard-close" id="keyboard-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="keyboard-grid">
+            <button type="button" class="key-btn" data-value="1">1</button>
+            <button type="button" class="key-btn" data-value="2">2</button>
+            <button type="button" class="key-btn" data-value="3">3</button>
+            <button type="button" class="key-btn" data-value="/">/</button>
+            
+            <button type="button" class="key-btn" data-value="4">4</button>
+            <button type="button" class="key-btn" data-value="5">5</button>
+            <button type="button" class="key-btn" data-value="6">6</button>
+            <button type="button" class="key-btn" data-value="-">-</button>
+            
+            <button type="button" class="key-btn" data-value="7">7</button>
+            <button type="button" class="key-btn" data-value="8">8</button>
+            <button type="button" class="key-btn" data-value="9">9</button>
+            <button type="button" class="key-btn" data-value="+">+</button>
+            
+            <button type="button" class="key-btn" data-value="0">0</button>
+            <button type="button" class="key-btn" data-value=".">.</button>
+            <button type="button" class="key-btn clear" id="key-clear">C</button>
+            <button type="button" class="key-btn delete" id="key-delete">
+                <i class="fas fa-backspace"></i>
+            </button>
+            
+        </div>
+        <div class="keyboard-footer">
+            <button type="button" class="keyboard-done" id="keyboard-done">
+                <i class="fas fa-check"></i> Done
+            </button>
+        </div>
+    </div>
 </body>
 </html>
