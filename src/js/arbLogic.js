@@ -79,6 +79,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isMobile()) return;
         
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            const ignoredTypes = ['checkbox', 'radio', 'button', 'submit', 'color', 'file'];
+            if (ignoredTypes.includes(e.target.type)) {
+                return; 
+            }
             // Don't interfere with our keyboard buttons
             if (e.target.closest('.custom-keyboard')) return;
             
@@ -201,18 +205,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+let lastWidth = window.innerWidth;
+
 function handleDetailsForScreen() {
-    const detailsList = document.querySelectorAll("details.instruction-section");
-    if (window.innerWidth >= 768) {
-        detailsList.forEach(detail => detail.setAttribute("open", ""));
-    }
-    else {
-        detailsList.forEach(detail => detail.removeAttribute("open"));
+    const currentWidth = window.innerWidth;
+    
+    if (currentWidth !== lastWidth) {
+        const detailsList = document.querySelectorAll("details.instruction-section");
+        if (currentWidth >= 1200) {
+            detailsList.forEach(detail => detail.setAttribute("open", ""));
+        } else {
+            detailsList.forEach(detail => detail.removeAttribute("open"));
+        }
+        lastWidth = currentWidth;
     }
 }
 
-handleDetailsForScreen();
 window.addEventListener("resize", handleDetailsForScreen);
+
 
 // ===== ORIGINAL JAVASCRIPT CODE =====
 const calcu = document.getElementById("calculate");

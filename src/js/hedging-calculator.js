@@ -62,6 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isMobile()) return;
         
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            const ignoredTypes = ['checkbox', 'radio', 'button', 'submit', 'color', 'file'];
+            if (ignoredTypes.includes(e.target.type)) {
+                return; 
+            }
             // Don't interfere with our keyboard buttons
             if (e.target.closest('.custom-keyboard')) return;
             

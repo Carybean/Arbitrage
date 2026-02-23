@@ -70,11 +70,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Prevent actual keyboard from opening (mobile only)
-    document.addEventListener('focusin', function(e) {
+    document.addEventListener('click', function(e) {
         // Only apply on mobile
         if (!isMobile()) return;
         
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            const ignoredTypes = ['checkbox', 'radio', 'button', 'submit', 'color', 'file'];
+            if (ignoredTypes.includes(e.target.type)) {
+                return; 
+            }
             // Don't interfere with our keyboard buttons
             if (e.target.closest('.custom-keyboard')) return;
             
@@ -696,7 +700,7 @@ document.addEventListener('DOMContentLoaded', function() {
         legRow.innerHTML = `
             <div class="leg-number">${legCounter}</div>
             <div class="leg-inputs">
-                <input type="text" inputmode="text" maxlength="13" class="leg-odds" placeholder="${getPlaceholderForFormat(globalOddsFormat)}">
+                <input type="text" inputmode="none" maxlength="13" class="leg-odds" placeholder="${getPlaceholderForFormat(globalOddsFormat)}">
                 <button type="button" class="leg-remove" data-id="${legId}">
                     <i class="fas fa-times"></i>
                 </button>

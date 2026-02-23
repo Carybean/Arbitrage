@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+
             // ===== THEME TOGGLE =====
             const themeSwitch = document.getElementById('theme-switch');
             const body = document.body;
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     applyTheme('light');
                 }
             });
-
+            
             function isMobile() {
                 return window.innerWidth <= 768;
             }
@@ -69,11 +70,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Prevent actual keyboard from opening (mobile only)
-            document.addEventListener('focusin', function(e) {
+            document.addEventListener('click', function(e) {
                 // Only apply on mobile
                 if (!isMobile()) return;
                 
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                    const ignoredTypes = ['checkbox', 'radio', 'button', 'submit', 'color', 'file'];
+                    if (ignoredTypes.includes(e.target.type)) {
+                        return; 
+                    }
                     // Don't interfere with our keyboard buttons
                     if (e.target.closest('.custom-keyboard')) return;
                     
@@ -195,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
+          
             let lastWidth = window.innerWidth;
 
             function handleDetailsForScreen() {

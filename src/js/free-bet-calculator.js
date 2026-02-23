@@ -69,11 +69,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Prevent actual keyboard from opening (mobile only)
-    document.addEventListener('focusin', function(e) {
+    document.addEventListener('click', function(e) {
         // Only apply on mobile
         if (!isMobile()) return;
         
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            const ignoredTypes = ['checkbox', 'radio', 'button', 'submit', 'color', 'file'];
+            if (ignoredTypes.includes(e.target.type)) {
+                return; 
+            }
             // Don't interfere with our keyboard buttons
             if (e.target.closest('.custom-keyboard')) return;
             

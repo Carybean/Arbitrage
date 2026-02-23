@@ -71,11 +71,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Prevent actual keyboard from opening (mobile only)
-    document.addEventListener('focusin', function(e) {
+    document.addEventListener('click', function(e) {
         // Only apply on mobile
         if (!isMobile()) return;
         
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            const ignoredTypes = ['checkbox', 'radio', 'button', 'submit', 'color', 'file'];
+            if (ignoredTypes.includes(e.target.type)) {
+                return; 
+            }
             // Don't interfere with our keyboard buttons
             if (e.target.closest('.custom-keyboard')) return;
             
@@ -789,7 +793,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         outcomeRow.innerHTML = `
             <label>Outcome ${outcomeCounter}:</label>
-            <input type="text" inputmode="text" maxlength="13" class="outcome-odds" placeholder="${currentOddsFormat === 'decimal' ? '2.50' : currentOddsFormat === 'fractional' ? '3/2' : '+150'}" data-format="${currentOddsFormat}">
+            <input type="text" inputmode="none" maxlength="13" class="outcome-odds" placeholder="${currentOddsFormat === 'decimal' ? '2.50' : currentOddsFormat === 'fractional' ? '3/2' : '+150'}" data-format="${currentOddsFormat}">
             <button type="button" class="remove-outcome" data-id="${outcomeId}">
                 <i class="fas fa-times"></i>
             </button>
