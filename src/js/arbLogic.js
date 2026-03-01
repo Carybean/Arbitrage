@@ -65,6 +65,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Prevent body scrolling
         document.body.style.overflow = 'hidden';
+
+        setTimeout(() => {
+            if (activeInput) {
+                activeInput.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }, 300);
     }
 
     // Function to close custom keyboard
@@ -74,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Prevent actual keyboard from opening (mobile only)
-    document.addEventListener('focusin', function(e) {
+    document.addEventListener('click', function(e) {
         // Only apply on mobile
         if (!isMobile()) return;
         

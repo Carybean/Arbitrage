@@ -61,12 +61,25 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Prevent body scrolling
         document.body.style.overflow = 'hidden';
+
+        createSimulatedCursor(input);
+
+        setTimeout(() => {
+            if (activeInput) {
+                activeInput.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }, 300);
     }
 
     // Function to close custom keyboard
     function closeCustomKeyboard() {
         customKeyboard.classList.add('hidden');
         document.body.style.overflow = '';
+
+        removeSimulatedCursor();
     }
 
     // Prevent actual keyboard from opening (mobile only)
@@ -126,6 +139,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Trigger input event
             activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+            updateSimulatedCursor(activeInput);
         });
     });
 
@@ -137,6 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Trigger input event
         activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+        updateSimulatedCursor(activeInput);
     });
 
     // Clear button
@@ -147,6 +164,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Trigger input event
         activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+        updateSimulatedCursor(activeInput);
     });
 
     // Done button
@@ -179,6 +198,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('input[readonly]').forEach(input => {
                 input.removeAttribute('readonly');
             });
+
+            removeSimulatedCursor();
             
             activeInput = null;
         }
@@ -1039,4 +1060,128 @@ document.addEventListener('DOMContentLoaded', function() {
     
     initializeLegs();
     stakeInput.focus();
+
+    // ===== SIMULATED CURSOR FOR CUSTOM KEYBOARD =====
+    let cursorInterval = null;
+    let cursorElement = null;
+    let measuringSpan = null;
+    let originalInputParent = null;
+    let originalInputNextSibling = null;
+
+    function initMeasuringSpan() {
+        if (!measuringSpan) {
+            measuringSpan = document.createElement('span');
+            measuringSpan.style.position = 'absolute';
+            measuringSpan.style.visibility = 'hidden';
+            measuringSpan.style.whiteSpace = 'pre';
+            measuringSpan.style.pointerEvents = 'none';
+            document.body.appendChild(measuringSpan);
+        }
+    }
+
+    function createSimulatedCursor(input) {
+        if (!isMobile() || !input) return;
+
+        // Remove any existing cursor first
+        removeSimulatedCursor();
+
+        // Save original parent and next sibling for later restoration
+        originalInputParent = input.parentNode;
+        originalInputNextSibling = input.nextSibling;
+
+        // Create a wrapper to enable absolute positioning of the cursor
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'relative';
+        wrapper.style.display = 'inline-block';
+        wrapper.style.width = '100%';
+        wrapper.style.height = '100%';
+        wrapper.style.margin = '0';
+        wrapper.style.padding = '0';
+
+        // Insert wrapper before the input, then move input inside it
+        originalInputParent.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+
+        // Create the blinking cursor element
+        cursorElement = document.createElement('div');
+        cursorElement.className = 'simulated-cursor';
+        cursorElement.style.position = 'absolute';
+        cursorElement.style.top = '0';
+        cursorElement.style.left = '0';
+        cursorElement.style.width = '2px';
+        cursorElement.style.backgroundColor = 'currentColor'; // matches input text color
+        cursorElement.style.pointerEvents = 'none';
+        cursorElement.style.display = 'none'; // hidden until positioned
+        wrapper.appendChild(cursorElement);
+
+        // Prepare measuring span
+        initMeasuringSpan();
+
+        // Position and show the cursor
+        updateSimulatedCursor(input);
+        cursorElement.style.display = 'block';
+    }
+
+    function updateSimulatedCursor(input) {
+        if (!cursorElement || !input || !measuringSpan) return;
+
+        // Get input's computed styles to match font metrics
+        const style = window.getComputedStyle(input);
+        measuringSpan.style.font = style.font;
+        measuringSpan.style.fontSize = style.fontSize;
+        measuringSpan.style.fontFamily = style.fontFamily;
+        measuringSpan.style.fontWeight = style.fontWeight;
+        measuringSpan.style.fontStyle = style.fontStyle;
+        measuringSpan.style.letterSpacing = style.letterSpacing;
+        measuringSpan.style.textTransform = style.textTransform;
+
+        // Measure the current text width (use a space if empty so cursor stays visible)
+        const text = input.value || ' ';
+        measuringSpan.textContent = text;
+
+        // Calculate horizontal offset: padding-left + border-left + text width
+        const paddingLeft = parseFloat(style.paddingLeft) || 0;
+        const borderLeft = parseFloat(style.borderLeftWidth) || 0;
+        const textWidth = measuringSpan.offsetWidth;
+        const leftPos = paddingLeft + borderLeft + textWidth;
+
+        // Calculate vertical position and height based on line-height / font-size
+        const paddingTop = parseFloat(style.paddingTop) || 0;
+        const borderTop = parseFloat(style.borderTopWidth) || 0;
+        const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
+        const topPos = paddingTop + borderTop;
+
+        cursorElement.style.left = leftPos + 'px';
+        cursorElement.style.top = topPos + 'px';
+        cursorElement.style.height = lineHeight + 'px';
+    }
+
+    
+    function removeSimulatedCursor() {
+        if (cursorElement) {
+            const wrapper = cursorElement.parentNode;
+            if (wrapper) {
+                // Find the input inside the wrapper
+                const oldInput = wrapper.querySelector('input, textarea');
+                if (oldInput && originalInputParent) {
+                    // Optional: remove readonly from the deactivated input
+                    oldInput.removeAttribute('readonly');
+                    // Move the old input back to its original position
+                    wrapper.removeChild(oldInput);
+                    if (originalInputNextSibling) {
+                        originalInputParent.insertBefore(oldInput, originalInputNextSibling);
+                    } else {
+                        originalInputParent.appendChild(oldInput);
+                    }
+                    // Remove the empty wrapper
+                    wrapper.remove();
+                }
+            }
+            cursorElement = null;
+        }
+        if (cursorInterval) {
+            clearInterval(cursorInterval);
+            cursorInterval = null;
+        }
+    }
 });
