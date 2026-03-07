@@ -40,7 +40,7 @@
     padding: 0;
     box-sizing: border-box;
     max-width: 100%;
-    overflow-x: inherit;
+    overflow-x: auto;
 }
 
 html, body {

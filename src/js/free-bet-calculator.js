@@ -51,6 +51,251 @@ document.addEventListener('DOMContentLoaded', function() {
     const keyDelete = document.getElementById('key-delete');
     const keyClear = document.getElementById('key-clear');
 
+    // ===== INJECT SCALABLE STYLES FOR KEYBOARD =====
+    if (!document.getElementById('keyboard-scale-styles')) {
+        const style = document.createElement('style');
+        style.id = 'keyboard-scale-styles';
+        style.textContent = `
+            #custom-keyboard {
+                --keyboard-scale: 1;
+                --key-font-size: calc(1.3rem * var(--keyboard-scale));
+                --key-padding: calc(0.5rem * var(--keyboard-scale));
+                --grid-gap: calc(0.5rem * var(--keyboard-scale));
+                scrollbar-width: none;
+            }
+            #custom-keyboard .keyboard-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--grid-gap);
+                
+            }
+            #custom-keyboard .key-btn {
+                font-size: var(--key-font-size);
+                padding: var(--key-padding);
+                border-radius: calc(0.45rem * var(--keyboard-scale));
+            }
+            #custom-keyboard .keyboard-actions {
+                display: flex;
+                gap: var(--grid-gap);
+                padding: 0 var(--grid-gap) var(--grid-gap) var(--grid-gap);
+            }
+            #custom-keyboard .keyboard-actions .key-btn {
+                flex: 1;
+            }
+            #custom-keyboard .keyboard-drag-handle {
+                height: 24px;
+                font-size: initial;
+            }
+            /* Keyboard header – now holds lock and close */
+            #custom-keyboard .keyboard-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0px 10px;
+                background-color: var(--card-bg);
+                margin-bottom: 0px;
+                border-bottom: 1px solid var(--border-color);
+            }
+            /* Lock button – matches close button style */
+            #custom-keyboard .keyboard-lock-btn {
+                background: none;
+                border: none;
+                color: var(--text-color);
+                font-size: 1.2rem;
+                cursor: pointer;
+                padding: 5px 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 4px;
+                transition: background-color 0.2s;
+            }
+            #custom-keyboard .keyboard-lock-btn:hover {
+                background-color: var(--light-color);
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // ===== KEYBOARD DRAG RESIZE LOGIC (with lock/unlock) =====
+    
+    // 1. Create drag handle
+    const dragHandle = document.createElement('div');
+    dragHandle.className = 'keyboard-drag-handle';
+    dragHandle.style.width = '100%';
+    dragHandle.style.height = '24px';
+    dragHandle.style.position = 'absolute';
+    dragHandle.style.top = '0';
+    dragHandle.style.left = '0';
+    dragHandle.style.cursor = 'ns-resize';
+    dragHandle.style.display = 'flex';
+    dragHandle.style.justifyContent = 'center';
+    dragHandle.style.alignItems = 'center';
+    dragHandle.style.zIndex = '100';
+    dragHandle.style.touchAction = 'none';
+
+    // 2. Add visual pill indicator
+    const dragIndicator = document.createElement('div');
+    dragIndicator.style.width = '40px';
+    dragIndicator.style.height = '4px';
+    dragIndicator.style.backgroundColor = 'var(--text-muted, #ccc)';
+    dragIndicator.style.borderRadius = '2px';
+    dragHandle.appendChild(dragIndicator);
+    
+    // Insert handle into keyboard
+    if (customKeyboard) {
+        if (window.getComputedStyle(customKeyboard).position === 'static') {
+            customKeyboard.style.position = 'relative';
+        }
+        customKeyboard.insertBefore(dragHandle, customKeyboard.firstChild);
+        
+        const currentPaddingTop = parseInt(window.getComputedStyle(customKeyboard).paddingTop, 10);
+        if (currentPaddingTop < 24) {
+            customKeyboard.style.paddingTop = '24px';
+        }
+    }
+
+    // 3. Drag variables
+    let isDraggingKeyboard = false;
+    let startDragY, startKeyboardHeight;
+
+    // ----- Function to adjust key sizes based on keyboard height -----
+    function adjustKeySizes(height) {
+        if (!customKeyboard) return;
+        const baseHeight = 250;
+        let scale = height / baseHeight;
+        scale = Math.max(0.8, Math.min(2.0, scale));
+        customKeyboard.style.setProperty('--keyboard-scale', scale);
+    }
+
+    // ----- Lock/unlock state and saved height -----
+    const DEFAULT_KEYBOARD_HEIGHT = 320;
+    let keyboardLocked = false;
+
+    function setKeyboardHeight(height) {
+        if (!customKeyboard) return;
+        customKeyboard.style.height = `${height}px`;
+        adjustKeySizes(height);
+    }
+
+    // Load saved height and lock state on page start
+    (function initKeyboardHeight() {
+        const savedHeight = localStorage.getItem('keyboardHeight');
+        const locked = localStorage.getItem('keyboardHeightLocked') === 'true';
+        
+        if (savedHeight && locked) {
+            setKeyboardHeight(parseFloat(savedHeight));
+            keyboardLocked = true;
+        } else {
+            setKeyboardHeight(DEFAULT_KEYBOARD_HEIGHT);
+            keyboardLocked = false;
+            localStorage.removeItem('keyboardHeightLocked');
+        }
+    })();
+
+    // ----- Create lock button (Font Awesome) -----
+    const keyboardHeader = document.querySelector('.keyboard-header');
+    const lockBtn = document.createElement('button');
+    lockBtn.className = 'keyboard-lock-btn';
+    lockBtn.setAttribute('aria-label', 'Toggle lock keyboard height');
+    lockBtn.innerHTML = '<i class="fas fa-unlock-alt"></i>'; // will be updated
+
+    function updateLockIcon() {
+        const icon = lockBtn.querySelector('i');
+        if (keyboardLocked) {
+            icon.className = 'fas fa-lock';
+        } else {
+            icon.className = 'fas fa-unlock-alt';
+        }
+    }
+
+    // Insert lock button at the beginning of the header (left side)
+    if (keyboardHeader && keyboardClose) {
+        keyboardHeader.insertBefore(lockBtn, keyboardHeader.firstChild);
+        updateLockIcon();
+    } else {
+        console.warn('Keyboard header or close button not found; lock button not added.');
+    }
+
+    // Click handler for lock button
+    lockBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (keyboardLocked) {
+            // Unlock: remove lock flag
+            localStorage.removeItem('keyboardHeightLocked');
+            keyboardLocked = false;
+        } else {
+            // Lock current height
+            const currentHeight = customKeyboard.getBoundingClientRect().height;
+            localStorage.setItem('keyboardHeight', currentHeight);
+            localStorage.setItem('keyboardHeightLocked', 'true');
+            keyboardLocked = true;
+        }
+        updateLockIcon();
+    });
+
+    // 4. Drag move/end functions
+    function onKeyboardDragMove(e) {
+        if (!isDraggingKeyboard) return;
+        e.preventDefault();
+        
+        const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+        const deltaY = clientY - startDragY;
+        let newHeight = startKeyboardHeight - deltaY;
+        
+        const minHeight = 150;
+        const maxHeight = window.innerHeight * 0.85;
+        
+        if (newHeight < minHeight) newHeight = minHeight;
+        if (newHeight > maxHeight) newHeight = maxHeight;
+        
+        customKeyboard.style.height = `${newHeight}px`;
+        adjustKeySizes(newHeight);
+    }
+
+    function onKeyboardDragEnd() {
+        isDraggingKeyboard = false;
+        document.removeEventListener('mousemove', onKeyboardDragMove);
+        document.removeEventListener('touchmove', onKeyboardDragMove);
+        document.removeEventListener('mouseup', onKeyboardDragEnd);
+        document.removeEventListener('touchend', onKeyboardDragEnd);
+    }
+
+    // 5. Drag start – respect locked state (no dragging when locked)
+    dragHandle.addEventListener('mousedown', function(e) {
+        if (window.ignoreNextMouseDown) {
+            window.ignoreNextMouseDown = false;
+            return;
+        }
+        if (keyboardLocked) return;  // 🔒 cannot drag when locked
+        
+        isDraggingKeyboard = true;
+        startDragY = e.clientY;
+        startKeyboardHeight = customKeyboard.getBoundingClientRect().height;
+        
+        document.addEventListener('mousemove', onKeyboardDragMove);
+        document.addEventListener('mouseup', onKeyboardDragEnd);
+    });
+
+    dragHandle.addEventListener('touchstart', function(e) {
+        if (window.ignoreNextMouseDown) {
+            window.ignoreNextMouseDown = false;
+            return;
+        }
+        if (keyboardLocked) return;  // 🔒 cannot drag when locked
+        
+        isDraggingKeyboard = true;
+        startDragY = e.touches[0].clientY;
+        startKeyboardHeight = customKeyboard.getBoundingClientRect().height;
+        
+        document.addEventListener('touchmove', onKeyboardDragMove, { passive: false });
+        document.addEventListener('touchend', onKeyboardDragEnd);
+    }, { passive: false });
+
+    // ===== END KEYBOARD DRAG RESIZE LOGIC =====
+
     // Function to open custom keyboard
     function openCustomKeyboard(input) {
         if (!isMobile()) return; // Only on mobile

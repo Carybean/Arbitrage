@@ -235,13 +235,13 @@
                         <h3>Original Bet Details</h3>
                         <div class="input-group">
                             <label for="original-stake">Original Stake: </label>
-                            <input type="text" id="original-stake" inputmode="text" maxlength="13" min="0" placeholder="e.g., 100" value="100">
+                            <input type="text" id="original-stake" inputmode="text" maxlength="13" min="0" placeholder="e.g., 100">
                         </div>
                         <div class="input-hint">Amount you originally bet</div>
                         
                         <div class="input-group">
                             <label for="original-odds">Original Odds: </label>
-                            <input type="text" inputmode="text" maxlength="13" id="original-odds" placeholder="e.g., 3.00" value="3.00">
+                            <input type="text" inputmode="text" maxlength="13" id="original-odds" placeholder="e.g., 3.00">
                         </div>
                         <div class="input-hint">Odds when you placed the original bet</div>
                         <div class="error-message" id="original-odds-error"></div>
@@ -250,7 +250,7 @@
                         
                         <div class="input-group">
                             <label for="current-odds">Current Odds (Opposite): </label>
-                            <input type="text" id="current-odds" inputmode="text" maxlength="13" placeholder="e.g., 2.50" value="2.50">
+                            <input type="text" id="current-odds" inputmode="text" maxlength="13" placeholder="e.g., 2.50">
                         </div>
                         <div class="input-hint">Current odds for the opposite outcome</div>
                         <div class="error-message" id="current-odds-error"></div>
@@ -285,28 +285,28 @@
                     
                     <div class="hedge-display">
                         <div class="hedge-label" id="hedge-label">Optimal Hedge Bet </div>
-                        <div class="hedge-value" id="hedge-value">$120.00</div>
+                        <div class="hedge-value" id="hedge-value">--</div>
                         <div class="hedge-description" id="hedge-description">
-                            Lock Profit - Full Hedge: Lock in $80.00 guaranteed profit with $120.00 hedge bet.
+                            
                         </div>
                     </div>
                     
                     <div class="results-grid">
                         <div class="result-card">
                             <h4>Original Potential Win </h4>
-                            <div class="result-value" id="result-original-win">$200.00</div>
+                            <div class="result-value" id="result-original-win">--</div>
                         </div>
                         <div class="result-card">
                             <h4>Guaranteed Profit </h4>
-                            <div class="result-value" id="result-guaranteed">$80.00</div>
+                            <div class="result-value" id="result-guaranteed">--</div>
                         </div>
                         <div class="result-card">
                             <h4>Hedge Bet Amount </h4>
-                            <div class="result-value" id="result-hedge-amount">$120.00</div>
+                            <div class="result-value" id="result-hedge-amount">--</div>
                         </div>
                         <div class="result-card">
                             <h4>Risk Reduction </h4>
-                            <div class="result-value" id="result-risk-reduction">100%</div>
+                            <div class="result-value" id="result-risk-reduction">--%</div>
                         </div>
                     </div>
                     
@@ -314,15 +314,15 @@
                     <div class="results-grid" style="margin-top: 12px;">
                         <div class="result-card">
                             <h4>Profit if Original Wins </h4>
-                            <div class="result-value" id="result-profit-original">$80.00</div>
+                            <div class="result-value" id="result-profit-original">--</div>
                         </div>
                         <div class="result-card">
                             <h4>Profit if Hedge Wins </h4>
-                            <div class="result-value" id="result-profit-hedge">$80.00</div>
+                            <div class="result-value" id="result-profit-hedge">--</div>
                         </div>
                         <div class="result-card">
                             <h4>ROI on Hedge </h4>
-                            <div class="result-value" id="result-roi">66.67%</div>
+                            <div class="result-value" id="result-roi">--%</div>
                         </div>
                         <div class="result-card">
                             <h4>Effective Cash-Out </h4>
@@ -341,11 +341,11 @@
                             <div>Original bet pays out, hedge bet loses</div>
                             <div class="outcome-stats">
                                 <div class="stat-label">Net Profit:</div>
-                                <div class="stat-value" id="outcome-original-profit">$80.00</div>
+                                <div class="stat-value" id="outcome-original-profit">$0.00</div>
                             </div>
                             <div class="outcome-stats">
                                 <div class="stat-label">Total Return:</div>
-                                <div class="stat-value" id="outcome-original-return">$180.00</div>
+                                <div class="stat-value" id="outcome-original-return">$0.00</div>
                             </div>
                         </div>
                         
@@ -354,11 +354,11 @@
                             <div>Original bet loses, hedge bet wins</div>
                             <div class="outcome-stats">
                                 <div class="stat-label">Net Profit:</div>
-                                <div class="stat-value" id="outcome-hedge-profit">$80.00</div>
+                                <div class="stat-value" id="outcome-hedge-profit">$0.00</div>
                             </div>
                             <div class="outcome-stats">
                                 <div class="stat-label">Total Return:</div>
-                                <div class="stat-value" id="outcome-hedge-return">$120.00</div>
+                                <div class="stat-value" id="outcome-hedge-return">$0.00</div>
                             </div>
                         </div>
                         
@@ -367,11 +367,11 @@
                             <div>Guaranteed result regardless of outcome</div>
                             <div class="outcome-stats">
                                 <div class="stat-label">Guaranteed Profit:</div>
-                                <div class="stat-value" id="outcome-guaranteed-profit">$80.00</div>
+                                <div class="stat-value" id="outcome-guaranteed-profit">$0.00</div>
                             </div>
                             <div class="outcome-stats">
                                 <div class="stat-label">Risk Level:</div>
-                                <div class="stat-value" id="outcome-risk-level">Very Low</div>
+                                <div class="stat-value" id="outcome-risk-level">-- --</div>
                             </div>
                         </div>
                     </div>
@@ -394,17 +394,17 @@
                         <tbody id="comparison-body">
                             <tr>
                                 <td><strong>No Hedge</strong></td>
-                                <td>$200.00</td>
-                                <td>-$100.00</td>
-                                <td>High</td>
-                                <td>High risk, high reward</td>
+                                <td>$0.00</td>
+                                <td>$0.00</td>
+                                <td>--</td>
+                                <td>-- --</td>
                             </tr>
                             <tr class="better-option">
                                 <td><strong>With Hedge</strong></td>
-                                <td>$80.00</td>
-                                <td>$80.00</td>
-                                <td>None (Guaranteed)</td>
-                                <td>Guaranteed result</td>
+                                <td>$0.00</td>
+                                <td>$0.00</td>
+                                <td>--</td>
+                                <td>--</td>
                             </tr>
                         </tbody>
                     </table>
