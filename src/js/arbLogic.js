@@ -43,421 +43,495 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-        function isMobile() {
-            return window.innerWidth <= 768;
+    // ===== CUSTOM KEYBOARD FOR MOBILE =====
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+
+    // Track active input
+    let activeInput = null;
+
+    // Get keyboard elements
+    const customKeyboard = document.getElementById('custom-keyboard');
+    const keyboardClose = document.getElementById('keyboard-close');
+    const keyboardDone = document.getElementById('keyboard-done');
+    const keyDelete = document.getElementById('key-delete');
+    const keyClear = document.getElementById('key-clear');
+
+    // ===== INJECT SCALABLE STYLES FOR KEYBOARD =====
+    if (!document.getElementById('keyboard-scale-styles')) {
+        const style = document.createElement('style');
+        style.id = 'keyboard-scale-styles';
+        style.textContent = `
+            #custom-keyboard {
+                --keyboard-scale: 1;
+                --key-font-size: calc(1.3rem * var(--keyboard-scale));
+                --key-padding: calc(0.5rem * var(--keyboard-scale));
+                --grid-gap: calc(0.5rem * var(--keyboard-scale));
+                scrollbar-width: none;
+            }
+            #custom-keyboard .keyboard-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: var(--grid-gap);
+            }
+            #custom-keyboard .key-btn {
+                font-size: var(--key-font-size);
+                padding: var(--key-padding);
+                border-radius: calc(0.45rem * var(--keyboard-scale));
+            }
+            #custom-keyboard .keyboard-actions {
+                display: flex;
+                gap: var(--grid-gap);
+                padding: 0 var(--grid-gap) var(--grid-gap) var(--grid-gap);
+            }
+            #custom-keyboard .keyboard-actions .key-btn {
+                flex: 1;
+            }
+            #custom-keyboard .keyboard-drag-handle {
+                height: 24px;
+                font-size: initial;
+            }
+            #custom-keyboard .keyboard-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0px 10px;
+                background-color: var(--card-bg);
+                margin-bottom: 0px;
+                border-bottom: 1px solid var(--border-color);
+            }
+            #custom-keyboard .keyboard-lock-btn {
+                background: none;
+                border: none;
+                color: var(--text-color);
+                font-size: 1.2rem;
+                cursor: pointer;
+                padding: 5px 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 4px;
+                transition: background-color 0.2s;
+            }
+            #custom-keyboard .keyboard-lock-btn:hover {
+                background-color: var(--light-color);
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // ===== KEYBOARD DRAG RESIZE LOGIC (with lock/unlock) =====
+
+    // 1. Create drag handle
+    const dragHandle = document.createElement('div');
+    dragHandle.className = 'keyboard-drag-handle';
+    dragHandle.style.width = '100%';
+    dragHandle.style.height = '24px';
+    dragHandle.style.position = 'absolute';
+    dragHandle.style.top = '0';
+    dragHandle.style.left = '0';
+    dragHandle.style.cursor = 'ns-resize';
+    dragHandle.style.display = 'flex';
+    dragHandle.style.justifyContent = 'center';
+    dragHandle.style.alignItems = 'center';
+    dragHandle.style.zIndex = '100';
+    dragHandle.style.touchAction = 'none';
+
+    // 2. Add visual pill indicator
+    const dragIndicator = document.createElement('div');
+    dragIndicator.style.width = '40px';
+    dragIndicator.style.height = '4px';
+    dragIndicator.style.backgroundColor = 'var(--text-muted, #ccc)';
+    dragIndicator.style.borderRadius = '2px';
+    dragHandle.appendChild(dragIndicator);
+
+    // Insert handle into keyboard
+    if (customKeyboard) {
+        if (window.getComputedStyle(customKeyboard).position === 'static') {
+            customKeyboard.style.position = 'relative';
         }
-
-        // Track active input
-        let activeInput = null;
-
-        // Get keyboard elements
-        const customKeyboard = document.getElementById('custom-keyboard');
-        const keyboardClose = document.getElementById('keyboard-close');
-        const keyboardDone = document.getElementById('keyboard-done');
-        const keyDelete = document.getElementById('key-delete');
-        const keyClear = document.getElementById('key-clear');
-
-            // ===== INJECT SCALABLE STYLES FOR KEYBOARD =====
-        if (!document.getElementById('keyboard-scale-styles')) {
-            const style = document.createElement('style');
-            style.id = 'keyboard-scale-styles';
-            style.textContent = `
-                #custom-keyboard {
-                    --keyboard-scale: 1;
-                    --key-font-size: calc(1.3rem * var(--keyboard-scale));
-                    --key-padding: calc(0.5rem * var(--keyboard-scale));
-                    --grid-gap: calc(0.5rem * var(--keyboard-scale));
-                    scrollbar-width: none;
-                }
-                #custom-keyboard .keyboard-grid {
-                    display: grid;
-                    grid-template-columns: repeat(4, 1fr);
-                    gap: var(--grid-gap);
-                    
-                }
-                #custom-keyboard .key-btn {
-                    font-size: var(--key-font-size);
-                    padding: var(--key-padding);
-                    border-radius: calc(0.45rem * var(--keyboard-scale));
-                }
-                #custom-keyboard .keyboard-actions {
-                    display: flex;
-                    gap: var(--grid-gap);
-                    padding: 0 var(--grid-gap) var(--grid-gap) var(--grid-gap);
-                }
-                #custom-keyboard .keyboard-actions .key-btn {
-                    flex: 1;
-                }
-                #custom-keyboard .keyboard-drag-handle {
-                    height: 24px;
-                    font-size: initial;
-                }
-                /* Keyboard header – now holds lock and close */
-                #custom-keyboard .keyboard-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 0px 10px;
-                    background-color: var(--card-bg);
-                    margin-bottom: 0px;
-                    border-bottom: 1px solid var(--border-color);
-                }
-                /* Lock button – matches close button style */
-                #custom-keyboard .keyboard-lock-btn {
-                    background: none;
-                    border: none;
-                    color: var(--text-color);
-                    font-size: 1.2rem;
-                    cursor: pointer;
-                    padding: 5px 10px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 40px;
-                    height: 40px;
-                    border-radius: 4px;
-                    transition: background-color 0.2s;
-                }
-                #custom-keyboard .keyboard-lock-btn:hover {
-                    background-color: var(--light-color);
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        // ===== KEYBOARD DRAG RESIZE LOGIC (with lock/unlock) =====
+        customKeyboard.insertBefore(dragHandle, customKeyboard.firstChild);
         
-        // 1. Create drag handle
-        const dragHandle = document.createElement('div');
-        dragHandle.className = 'keyboard-drag-handle';
-        dragHandle.style.width = '100%';
-        dragHandle.style.height = '24px';
-        dragHandle.style.position = 'absolute';
-        dragHandle.style.top = '0';
-        dragHandle.style.left = '0';
-        dragHandle.style.cursor = 'ns-resize';
-        dragHandle.style.display = 'flex';
-        dragHandle.style.justifyContent = 'center';
-        dragHandle.style.alignItems = 'center';
-        dragHandle.style.zIndex = '100';
-        dragHandle.style.touchAction = 'none';
+        const currentPaddingTop = parseInt(window.getComputedStyle(customKeyboard).paddingTop, 10);
+        if (currentPaddingTop < 24) {
+            customKeyboard.style.paddingTop = '24px';
+        }
+    }
 
-        // 2. Add visual pill indicator
-        const dragIndicator = document.createElement('div');
-        dragIndicator.style.width = '40px';
-        dragIndicator.style.height = '4px';
-        dragIndicator.style.backgroundColor = 'var(--text-muted, #ccc)';
-        dragIndicator.style.borderRadius = '2px';
-        dragHandle.appendChild(dragIndicator);
+    // 3. Drag variables
+    let isDraggingKeyboard = false;
+    let startDragY, startKeyboardHeight;
+
+    // ----- Function to adjust key sizes based on keyboard height -----
+    function adjustKeySizes(height) {
+        if (!customKeyboard) return;
+        const baseHeight = 250;
+        let scale = height / baseHeight;
+        scale = Math.max(0.8, Math.min(2.0, scale));
+        customKeyboard.style.setProperty('--keyboard-scale', scale);
+    }
+
+    // ----- Lock/unlock state and saved height -----
+    const DEFAULT_KEYBOARD_HEIGHT = 320;
+    let keyboardLocked = false;
+
+    function setKeyboardHeight(height) {
+        if (!customKeyboard) return;
+        customKeyboard.style.height = `${height}px`;
+        adjustKeySizes(height);
+    }
+
+    // Load saved height and lock state on page start
+    (function initKeyboardHeight() {
+        const savedHeight = localStorage.getItem('keyboardHeight');
+        const locked = localStorage.getItem('keyboardHeightLocked') === 'true';
         
-        // Insert handle into keyboard
-        if (customKeyboard) {
-            if (window.getComputedStyle(customKeyboard).position === 'static') {
-                customKeyboard.style.position = 'relative';
-            }
-            customKeyboard.insertBefore(dragHandle, customKeyboard.firstChild);
-            
-            const currentPaddingTop = parseInt(window.getComputedStyle(customKeyboard).paddingTop, 10);
-            if (currentPaddingTop < 24) {
-                customKeyboard.style.paddingTop = '24px';
-            }
-        }
-
-        // 3. Drag variables
-        let isDraggingKeyboard = false;
-        let startDragY, startKeyboardHeight;
-
-        // ----- Function to adjust key sizes based on keyboard height -----
-        function adjustKeySizes(height) {
-            if (!customKeyboard) return;
-            const baseHeight = 250;
-            let scale = height / baseHeight;
-            scale = Math.max(0.8, Math.min(2.0, scale));
-            customKeyboard.style.setProperty('--keyboard-scale', scale);
-        }
-
-        // ----- Lock/unlock state and saved height -----
-        const DEFAULT_KEYBOARD_HEIGHT = 320;
-        let keyboardLocked = false;
-
-        function setKeyboardHeight(height) {
-            if (!customKeyboard) return;
-            customKeyboard.style.height = `${height}px`;
-            adjustKeySizes(height);
-        }
-
-        // Load saved height and lock state on page start
-        (function initKeyboardHeight() {
-            const savedHeight = localStorage.getItem('keyboardHeight');
-            const locked = localStorage.getItem('keyboardHeightLocked') === 'true';
-            
-            if (savedHeight && locked) {
-                setKeyboardHeight(parseFloat(savedHeight));
-                keyboardLocked = true;
-            } else {
-                setKeyboardHeight(DEFAULT_KEYBOARD_HEIGHT);
-                keyboardLocked = false;
-                localStorage.removeItem('keyboardHeightLocked');
-            }
-        })();
-
-        // ----- Create lock button (Font Awesome) -----
-        const keyboardHeader = document.querySelector('.keyboard-header');
-        const lockBtn = document.createElement('button');
-        lockBtn.className = 'keyboard-lock-btn';
-        lockBtn.setAttribute('aria-label', 'Toggle lock keyboard height');
-        lockBtn.innerHTML = '<i class="fas fa-unlock-alt"></i>'; // will be updated
-
-        function updateLockIcon() {
-            const icon = lockBtn.querySelector('i');
-            if (keyboardLocked) {
-                icon.className = 'fas fa-lock';
-            } else {
-                icon.className = 'fas fa-unlock-alt';
-            }
-        }
-
-        // Insert lock button at the beginning of the header (left side)
-        if (keyboardHeader && keyboardClose) {
-            keyboardHeader.insertBefore(lockBtn, keyboardHeader.firstChild);
-            updateLockIcon();
+        if (savedHeight && locked) {
+            setKeyboardHeight(parseFloat(savedHeight));
+            keyboardLocked = true;
         } else {
-            console.warn('Keyboard header or close button not found; lock button not added.');
+            setKeyboardHeight(DEFAULT_KEYBOARD_HEIGHT);
+            keyboardLocked = false;
+            localStorage.removeItem('keyboardHeightLocked');
         }
+    })();
 
-        // Click handler for lock button
-        lockBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (keyboardLocked) {
-                // Unlock: remove lock flag
-                localStorage.removeItem('keyboardHeightLocked');
-                keyboardLocked = false;
-            } else {
-                // Lock current height
-                const currentHeight = customKeyboard.getBoundingClientRect().height;
-                localStorage.setItem('keyboardHeight', currentHeight);
-                localStorage.setItem('keyboardHeightLocked', 'true');
-                keyboardLocked = true;
-            }
-            updateLockIcon();
-        });
+    // ----- Create lock button (Font Awesome) -----
+    const keyboardHeader = document.querySelector('.keyboard-header');
+    const lockBtn = document.createElement('button');
+    lockBtn.className = 'keyboard-lock-btn';
+    lockBtn.setAttribute('aria-label', 'Toggle lock keyboard height');
+    lockBtn.innerHTML = '<i class="fas fa-unlock-alt"></i>';
 
-        // 4. Drag move/end functions
-        function onKeyboardDragMove(e) {
-            if (!isDraggingKeyboard) return;
-            e.preventDefault();
-            
-            const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-            const deltaY = clientY - startDragY;
-            let newHeight = startKeyboardHeight - deltaY;
-            
-            const minHeight = 150;
-            const maxHeight = window.innerHeight * 0.85;
-            
-            if (newHeight < minHeight) newHeight = minHeight;
-            if (newHeight > maxHeight) newHeight = maxHeight;
-            
-            customKeyboard.style.height = `${newHeight}px`;
-            adjustKeySizes(newHeight);
+    function updateLockIcon() {
+        const icon = lockBtn.querySelector('i');
+        if (keyboardLocked) {
+            icon.className = 'fas fa-lock';
+        } else {
+            icon.className = 'fas fa-unlock-alt';
         }
+    }
 
-        function onKeyboardDragEnd() {
-            isDraggingKeyboard = false;
-            document.removeEventListener('mousemove', onKeyboardDragMove);
-            document.removeEventListener('touchmove', onKeyboardDragMove);
-            document.removeEventListener('mouseup', onKeyboardDragEnd);
-            document.removeEventListener('touchend', onKeyboardDragEnd);
+    // Insert lock button at the beginning of the header (left side)
+    if (keyboardHeader && keyboardClose) {
+        keyboardHeader.insertBefore(lockBtn, keyboardHeader.firstChild);
+        updateLockIcon();
+    }
+
+    // Click handler for lock button
+    lockBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (keyboardLocked) {
+            localStorage.removeItem('keyboardHeightLocked');
+            keyboardLocked = false;
+        } else {
+            const currentHeight = customKeyboard.getBoundingClientRect().height;
+            localStorage.setItem('keyboardHeight', currentHeight);
+            localStorage.setItem('keyboardHeightLocked', 'true');
+            keyboardLocked = true;
         }
+        updateLockIcon();
+    });
 
-        // 5. Drag start – respect locked state (no dragging when locked)
-        dragHandle.addEventListener('mousedown', function(e) {
-            if (window.ignoreNextMouseDown) {
-                window.ignoreNextMouseDown = false;
-                return;
-            }
-            if (keyboardLocked) return;  // 🔒 cannot drag when locked
-            
-            isDraggingKeyboard = true;
-            startDragY = e.clientY;
-            startKeyboardHeight = customKeyboard.getBoundingClientRect().height;
-            
-            document.addEventListener('mousemove', onKeyboardDragMove);
-            document.addEventListener('mouseup', onKeyboardDragEnd);
-        });
+    // 4. Drag move/end functions
+    function onKeyboardDragMove(e) {
+        if (!isDraggingKeyboard) return;
+        e.preventDefault();
+        
+        const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+        const deltaY = clientY - startDragY;
+        let newHeight = startKeyboardHeight - deltaY;
+        
+        const minHeight = 150;
+        const maxHeight = window.innerHeight * 0.85;
+        
+        if (newHeight < minHeight) newHeight = minHeight;
+        if (newHeight > maxHeight) newHeight = maxHeight;
+        
+        customKeyboard.style.height = `${newHeight}px`;
+        adjustKeySizes(newHeight);
+    }
 
-        dragHandle.addEventListener('touchstart', function(e) {
-            if (window.ignoreNextMouseDown) {
-                window.ignoreNextMouseDown = false;
-                return;
-            }
-            if (keyboardLocked) return;  // 🔒 cannot drag when locked
-            
-            isDraggingKeyboard = true;
-            startDragY = e.touches[0].clientY;
-            startKeyboardHeight = customKeyboard.getBoundingClientRect().height;
-            
-            document.addEventListener('touchmove', onKeyboardDragMove, { passive: false });
-            document.addEventListener('touchend', onKeyboardDragEnd);
-        }, { passive: false });
+    function onKeyboardDragEnd() {
+        isDraggingKeyboard = false;
+        document.removeEventListener('mousemove', onKeyboardDragMove);
+        document.removeEventListener('touchmove', onKeyboardDragMove);
+        document.removeEventListener('mouseup', onKeyboardDragEnd);
+        document.removeEventListener('touchend', onKeyboardDragEnd);
+    }
 
-        // ===== END KEYBOARD DRAG RESIZE LOGIC =====
+    // 5. Drag start – respect locked state
+    dragHandle.addEventListener('mousedown', function(e) {
+        if (window.ignoreNextMouseDown) {
+            window.ignoreNextMouseDown = false;
+            return;
+        }
+        if (keyboardLocked) return;
+        
+        isDraggingKeyboard = true;
+        startDragY = e.clientY;
+        startKeyboardHeight = customKeyboard.getBoundingClientRect().height;
+        
+        document.addEventListener('mousemove', onKeyboardDragMove);
+        document.addEventListener('mouseup', onKeyboardDragEnd);
+    });
 
-        // Function to open custom keyboard
-        function openCustomKeyboard(input) {
-            if (!isMobile()) return; // Only on mobile
-            
-            activeInput = input;
-            customKeyboard.classList.remove('hidden');
-            
-            // Prevent body scrolling
-            document.body.style.overflow = 'hidden';
+    dragHandle.addEventListener('touchstart', function(e) {
+        if (window.ignoreNextMouseDown) {
+            window.ignoreNextMouseDown = false;
+            return;
+        }
+        if (keyboardLocked) return;
+        
+        isDraggingKeyboard = true;
+        startDragY = e.touches[0].clientY;
+        startKeyboardHeight = customKeyboard.getBoundingClientRect().height;
+        
+        document.addEventListener('touchmove', onKeyboardDragMove, { passive: false });
+        document.addEventListener('touchend', onKeyboardDragEnd);
+    }, { passive: false });
 
-            setTimeout(() => {
-                if (activeInput) {
-                    activeInput.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'center' 
-                    });
+    // ===== SIMULATED CURSOR FOR CUSTOM KEYBOARD =====
+    let cursorInterval = null;
+    let cursorElement = null;
+    let measuringSpan = null;
+    let originalInputParent = null;
+    let originalInputNextSibling = null;
+
+    function initMeasuringSpan() {
+        if (!measuringSpan) {
+            measuringSpan = document.createElement('span');
+            measuringSpan.style.position = 'absolute';
+            measuringSpan.style.visibility = 'hidden';
+            measuringSpan.style.whiteSpace = 'pre';
+            measuringSpan.style.pointerEvents = 'none';
+            document.body.appendChild(measuringSpan);
+        }
+    }
+
+    function createSimulatedCursor(input) {
+        if (!isMobile() || !input) return;
+
+        removeSimulatedCursor();
+
+        originalInputParent = input.parentNode;
+        originalInputNextSibling = input.nextSibling;
+
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'relative';
+        wrapper.style.display = 'inline-block';
+        wrapper.style.width = '100%';
+        wrapper.style.height = '100%';
+        wrapper.style.margin = '0';
+        wrapper.style.padding = '0';
+
+        originalInputParent.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+
+        cursorElement = document.createElement('div');
+        cursorElement.className = 'simulated-cursor';
+        cursorElement.style.position = 'absolute';
+        cursorElement.style.top = '0';
+        cursorElement.style.left = '0';
+        cursorElement.style.width = '2px';
+        cursorElement.style.backgroundColor = 'currentColor';
+        cursorElement.style.pointerEvents = 'none';
+        cursorElement.style.display = 'none';
+        wrapper.appendChild(cursorElement);
+
+        initMeasuringSpan();
+        updateSimulatedCursor(input);
+        cursorElement.style.display = 'block';
+    }
+
+    function updateSimulatedCursor(input) {
+        if (!cursorElement || !input || !measuringSpan) return;
+
+        const style = window.getComputedStyle(input);
+        measuringSpan.style.font = style.font;
+        measuringSpan.style.fontSize = style.fontSize;
+        measuringSpan.style.fontFamily = style.fontFamily;
+        measuringSpan.style.fontWeight = style.fontWeight;
+        measuringSpan.style.fontStyle = style.fontStyle;
+        measuringSpan.style.letterSpacing = style.letterSpacing;
+        measuringSpan.style.textTransform = style.textTransform;
+
+        const text = input.value || ' ';
+        measuringSpan.textContent = text;
+
+        const paddingLeft = parseFloat(style.paddingLeft) || 0;
+        const borderLeft = parseFloat(style.borderLeftWidth) || 0;
+        const textWidth = measuringSpan.offsetWidth;
+        const leftPos = paddingLeft + borderLeft + textWidth;
+
+        const paddingTop = parseFloat(style.paddingTop) || 0;
+        const borderTop = parseFloat(style.borderTopWidth) || 0;
+        const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
+        const topPos = paddingTop + borderTop;
+
+        cursorElement.style.left = leftPos + 'px';
+        cursorElement.style.top = topPos + 'px';
+        cursorElement.style.height = lineHeight + 'px';
+    }
+
+    function removeSimulatedCursor() {
+        if (cursorElement) {
+            const wrapper = cursorElement.parentNode;
+            if (wrapper) {
+                const oldInput = wrapper.querySelector('input, textarea');
+                if (oldInput && originalInputParent) {
+                    wrapper.removeChild(oldInput);
+                    if (originalInputNextSibling) {
+                        originalInputParent.insertBefore(oldInput, originalInputNextSibling);
+                    } else {
+                        originalInputParent.appendChild(oldInput);
+                    }
+                    wrapper.remove();
                 }
-            }, 300);
+            }
+            cursorElement = null;
         }
+        if (cursorInterval) {
+            clearInterval(cursorInterval);
+            cursorInterval = null;
+        }
+    }
 
-        // Function to close custom keyboard
-        function closeCustomKeyboard() {
+    // ===== CUSTOM KEYBOARD FUNCTIONS =====
+    function openCustomKeyboard(input) {
+        if (!isMobile()) return;
+        
+        activeInput = input;
+        customKeyboard.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        createSimulatedCursor(input);
+
+        const currentHeight = customKeyboard.getBoundingClientRect().height;
+        adjustKeySizes(currentHeight);
+
+        setTimeout(() => {
+            if (activeInput) {
+                activeInput.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+        }, 300);
+    }
+
+    function closeCustomKeyboard() {
+        customKeyboard.classList.add('hidden');
+        document.body.style.overflow = '';
+        removeSimulatedCursor();
+    }
+
+    // Prevent actual keyboard from opening
+    document.addEventListener('click', function(e) {
+        if (!isMobile()) return;
+        
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            const ignoredTypes = ['checkbox', 'radio', 'button', 'submit', 'color', 'file'];
+            if (ignoredTypes.includes(e.target.type)) return;
+            if (e.target.closest('.custom-keyboard')) return;
+            
+            e.preventDefault();
+            e.target.setAttribute('readonly', true);
+            openCustomKeyboard(e.target);
+        }
+    });
+
+    document.querySelectorAll('.key-btn[data-value]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (!isMobile() || !activeInput) return;
+            
+            const value = this.dataset.value;
+            
+            const currentValue = activeInput.value;
+            const lastChar = currentValue.slice(-1);
+            const operators = ['+', '-', '/', '.'];
+            
+            if (operators.includes(value) && operators.includes(lastChar)) return;
+            
+            activeInput.value += value;
+            activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+            updateSimulatedCursor(activeInput);
+            
+            // TRIGGER VALIDATION
+            triggerValidationForInput(activeInput);
+        });
+    });
+
+    // Update delete button
+    keyDelete.addEventListener('click', function() {
+        if (!isMobile() || !activeInput) return;
+        activeInput.value = activeInput.value.slice(0, -1);
+        activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+        updateSimulatedCursor(activeInput);
+        
+        // TRIGGER VALIDATION
+        triggerValidationForInput(activeInput);
+    });
+
+    // Update clear button
+    keyClear.addEventListener('click', function() {
+        if (!isMobile() || !activeInput) return;
+        activeInput.value = '';
+        activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+        updateSimulatedCursor(activeInput);
+        
+        // TRIGGER VALIDATION
+        triggerValidationForInput(activeInput);
+    });
+
+    keyboardDone.addEventListener('click', function() {
+        if (!isMobile() || !activeInput) return;
+        activeInput.removeAttribute('readonly');
+        activeInput.blur();
+        closeCustomKeyboard();
+    });
+
+    keyboardClose.addEventListener('click', function() {
+        if (!isMobile() || !activeInput) return;
+        activeInput.removeAttribute('readonly');
+        activeInput.blur();
+        closeCustomKeyboard();
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (!isMobile()) {
             customKeyboard.classList.add('hidden');
             document.body.style.overflow = '';
-        }
-
-        // Prevent actual keyboard from opening (mobile only)
-        document.addEventListener('click', function(e) {
-            // Only apply on mobile
-            if (!isMobile()) return;
-            
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                const ignoredTypes = ['checkbox', 'radio', 'button', 'submit', 'color', 'file'];
-                if (ignoredTypes.includes(e.target.type)) {
-                    return; 
-                }
-                // Don't interfere with our keyboard buttons
-                if (e.target.closest('.custom-keyboard')) return;
-                
-                // For all other inputs, prevent default and open custom keyboard
-                e.preventDefault();
-                
-                // Make input read-only to prevent actual keyboard
-                e.target.setAttribute('readonly', true);
-                
-                // Open custom keyboard
-                openCustomKeyboard(e.target);
-            }
-        });
-
-        // Handle keyboard button clicks
-        document.querySelectorAll('.key-btn[data-value]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (!isMobile() || !activeInput) return;
-                
-                const value = this.dataset.value;
-                
-                // Validate based on odds format
-                const format = document.querySelector('.odds-type-btn.active')?.dataset.format || 'decimal';
-                
-                // Basic validation - prevent multiple operators
-                const currentValue = activeInput.value;
-                const lastChar = currentValue.slice(-1);
-                const operators = ['+', '-', '/', '.'];
-                
-                if (operators.includes(value) && operators.includes(lastChar)) {
-                    return; // Don't allow two operators in a row
-                }
-                
-                // For fractional odds, prevent multiple slashes
-                if (format === 'fractional' && value === '/' && currentValue.includes('/')) {
-                    return;
-                }
-                
-                // For decimal odds, prevent multiple decimals
-                if (format === 'decimal' && value === '.' && currentValue.includes('.')) {
-                    return;
-                }
-                
-                activeInput.value += value;
-                
-                // Trigger input event
-                activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+            document.querySelectorAll('input[readonly]').forEach(input => {
+                input.removeAttribute('readonly');
             });
-        });
-
-        // Delete button (backspace)
-        keyDelete.addEventListener('click', function() {
-            if (!isMobile() || !activeInput) return;
-            
-            activeInput.value = activeInput.value.slice(0, -1);
-            
-            // Trigger input event
-            activeInput.dispatchEvent(new Event('input', { bubbles: true }));
-        });
-
-        // Clear button
-        keyClear.addEventListener('click', function() {
-            if (!isMobile() || !activeInput) return;
-            
-            activeInput.value = '';
-            
-            // Trigger input event
-            activeInput.dispatchEvent(new Event('input', { bubbles: true }));
-        });
-
-        // Done button
-        keyboardDone.addEventListener('click', function() {
-            if (!isMobile() || !activeInput) return;
-            
-            // Remove readonly attribute
-            activeInput.removeAttribute('readonly');
-            activeInput.blur();
-            closeCustomKeyboard();
-        });
-
-        // Close button
-        keyboardClose.addEventListener('click', function() {
-            if (!isMobile() || !activeInput) return;
-            
-            activeInput.removeAttribute('readonly');
-            activeInput.blur();
-            closeCustomKeyboard();
-        });
-
-        // Handle window resize (switch between mobile/desktop)
-        window.addEventListener('resize', function() {
-            if (!isMobile()) {
-                // If switching to desktop, close keyboard and remove readonly from all inputs
-                customKeyboard.classList.add('hidden');
-                document.body.style.overflow = '';
-                
-                // Remove readonly from all inputs
-                document.querySelectorAll('input[readonly]').forEach(input => {
-                    input.removeAttribute('readonly');
-                });
-                
-                activeInput = null;
+            removeSimulatedCursor();
+            activeInput = null;
+        } else {
+            if (!customKeyboard.classList.contains('hidden')) {
+                const currentHeight = customKeyboard.getBoundingClientRect().height;
+                adjustKeySizes(currentHeight);
             }
-        });
+        }
+    });
 
-        // Close keyboard when clicking outside (mobile only)
-        document.addEventListener('click', function(e) {
-            if (!isMobile()) return;
-            
-            if (!customKeyboard.contains(e.target) && 
-                !e.target.matches('input, textarea') && 
-                !customKeyboard.classList.contains('hidden')) {
-                
-                if (activeInput) {
-                    activeInput.removeAttribute('readonly');
-                    activeInput.blur();
-                }
-                closeCustomKeyboard();
+    // Close keyboard when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!isMobile()) return;
+        if (!customKeyboard.contains(e.target) && 
+            !e.target.matches('input, textarea') && 
+            !customKeyboard.classList.contains('hidden')) {
+            if (activeInput) {
+                activeInput.removeAttribute('readonly');
+                activeInput.blur();
             }
-        });
+            closeCustomKeyboard();
+        }
+    });
 
 
     let lastWidth = window.innerWidth;
@@ -687,6 +761,22 @@ document.addEventListener('DOMContentLoaded', function() {
         pointValidityCheck();
         updateGlobalStatus();
     });
+
+    function triggerValidationForInput(input) {
+        // Manually trigger the input validation
+        if (input.id === 'amount') {
+            // For amount input
+            const event = new Event('input', { bubbles: true });
+            input.dispatchEvent(event);
+        } else {
+            // For odds inputs
+            const event = new Event('input', { bubbles: true });
+            input.dispatchEvent(event);
+        }
+        
+        // Also update global status
+        updateGlobalStatus();
+    }
 
     function updateGlobalStatus(){
         const allInputs = document.querySelectorAll(".bet-section input");

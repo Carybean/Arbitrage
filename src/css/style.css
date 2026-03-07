@@ -40,7 +40,7 @@
     padding: 0;
     box-sizing: border-box;
     max-width: 100%;
-    overflow-x: auto;
+    overflow-x: inherit;
 }
 
 html, body {
@@ -56,6 +56,10 @@ body {
     min-height: 100vh;
     padding-bottom: 30px;
     transition: var(--transition);
+}
+
+button, a, input {
+    touch-action: manipulation;
 }
 
 a {
@@ -1072,8 +1076,40 @@ dialog::backdrop {
         font-size: 1.4rem !important;
     }
 
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+    
     .container {
+        width: 100%;
+        max-width: 100vw;
         padding: 0 10px;
+        overflow-x: hidden;
+    }
+    
+    .calculator-section,
+    .instruction-section,
+    .info-section,
+    .history-section,
+    .toc-container {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+    
+    .bet-section {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .input-group input,
+    .input-label input,
+    #items {
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .nav-bar {

@@ -58,6 +58,11 @@ body {
     transition: var(--transition);
 }
 
+button, a, input {
+    touch-action: manipulation;
+}
+
+
 a {
     text-decoration: none;
     color: var(--secondary-color);
