@@ -310,12 +310,27 @@ document.addEventListener('DOMContentLoaded', function() {
         createSimulatedCursor(input);
 
         setTimeout(() => {
-            if (activeInput) {
-                activeInput.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-            }
+            if (activeInput && customKeyboard) {
+                // 1. Get the keyboard's height and the total window height
+                const keyboardHeight = customKeyboard.getBoundingClientRect().height;
+                const windowHeight = window.innerHeight;
+                
+                // 2. Calculate the "Safe Area" height left above the keyboard
+                const availableHeight = windowHeight - keyboardHeight;
+                
+                // 3. Get the input's current position relative to the document
+                const inputRect = activeInput.getBoundingClientRect();
+                const absoluteInputTop = inputRect.top + window.pageYOffset;
+                
+                // 4. Calculate the scroll target:
+                // Centers the input at 50% from the top of the available space
+                const scrollTarget = absoluteInputTop - (availableHeight * 0.5);
+
+                window.scrollTo({
+                    top: scrollTarget,
+                    behavior: 'smooth'
+                });
+            }
         }, 300);
     }
 
